@@ -1,0 +1,134 @@
+/* Pelota de padel más grande y con efecto visual */
+.padel-ball-efecto {
+  animation: padel-ball-pulse 1.2s infinite;
+  transform-origin: center;
+  filter: drop-shadow(0 0 8px #ffd70088);
+}
+
+@keyframes padel-ball-pulse {
+  0% { transform: scale(1); filter: drop-shadow(0 0 8px #ffd70088); }
+  50% { transform: scale(1.25); filter: drop-shadow(0 0 16px #ffd700cc); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 8px #ffd70088); }
+}
+.marcador-layout {
+  background: #1a2a4a;
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  padding: 32px 24px 16px 24px;
+  width: 100vw;
+  height: 105vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.marcador-title {
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.marcador-subtitle {
+  font-size: 1.1rem;
+  color: #b0c4de;
+  margin-top: 4px;
+}
+.marcador-table {
+  width: 90%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 16px;
+}
+.marcador-table th, .marcador-table td {
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 2.5rem;
+}
+.marcador-table th {
+  border-bottom: 2px solid #1e90ff;
+}
+.marcador-table td {
+  background: #223a6a;
+  color: #fff;
+  border-bottom: 1px solid #1e90ff;
+  vertical-align: middle;
+  padding: 0 8px;
+}
+.marcador-table .marcador-game {
+  background: #1e90ff;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  font-size: 3rem;
+}
+.marcador-nombre {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+}
+.marcador-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.marcador-matchtime {
+  font-size: 1.1rem;
+  text-align: left;
+}
+.marcador-matchtime span {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 4px;
+}
+/* Highlight para el set activo con efecto de iluminación y transparencia */
+.set-activo {
+  background: rgba(40, 12, 122, 0.968) !important; /* Pantone con transparencia */
+  color: #fff !important;
+  border-radius: 12px;
+  box-shadow: 0 0 24px 8px rgba(67,179,174,0.35);
+  font-weight: bold;
+  outline: none;
+  border: none !important;
+  transition: background 0.3s;
+}
+/* Un bloque vertical continuo */
+.set-activo[data-block] {
+  border-radius: 12px;
+  box-shadow: 0 0 16px #43b3ae99;
+}
+.marcador-table td.set-activo {
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.marcador-table td.set-activo:first-child,
+.marcador-table td.set-activo:last-child {
+  border-radius: 12px;
+}
+/* Highlight para el header del set activo */
+.set-header-activo {
+  background: #000000 !important; /* naranja opaco */
+  color: #fff !important;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 0 12px 2px #051db699;
+  transition: background 0.3s;
+}
+/* Golden Point highlight - corregido para no heredar fondo negro */
+.golden-point {
+  background: linear-gradient(90deg, #ffd700 60%, #fffbe6 100%) !important;
+  color: #222 !important;
+  font-weight: bold;
+  box-shadow: 0 0 16px #ffd70099;
+  border-radius: 8px;
+  animation: golden-flash 1s infinite alternate;
+  border: none !important;
+}
+@keyframes golden-flash {
+  from { box-shadow: 0 0 16px #ffd70099; }
+  to { box-shadow: 0 0 32px #ffd700cc; }
+}

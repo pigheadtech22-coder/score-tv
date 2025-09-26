@@ -1,0 +1,64 @@
+.publicidad {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #222;
+  height: 100vh;
+}
+
+.publicidad video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.publicidad-logo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  z-index: 1000;
+  pointer-events: none;
+  /* Sin animación ni transición */
+}
+
+.publicidad-logo.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  /* Sin animación ni transición */
+}
+
+/* Animación logo cambio de cancha */
+.logo-cambio-cancha {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.05);
+  opacity: 1;
+  z-index: 2000;
+  pointer-events: none;
+  animation: logoZoomFade 2.8s forwards;
+}
+
+@keyframes logoZoomFade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.05);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.05);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(2.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.5);
+  }
+}
+

@@ -1,0 +1,4 @@
+.marcador-highlight td:not(.marcador-game) {
+  background: #43b3ae !important; /* Pantone 16-5422 TCX Blue Curacao */
+  transition: background 0.3s;
+}

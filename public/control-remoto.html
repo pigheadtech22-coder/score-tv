@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Control Remoto Marcador TV</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #222; color: #fff; text-align: center; padding: 40px; }
+    button { margin: 12px; padding: 18px 32px; font-size: 1.5rem; border-radius: 8px; border: none; background: #1e90ff; color: #fff; cursor: pointer; }
+    button:hover { background: #43b3ae; }
+    h1 { margin-bottom: 32px; }
+  </style>
+</head>
+<body>
+  <h1>Control Remoto Marcador TV</h1>
+  <button onclick="sendCmd('cambioCancha')">Cambio de cancha</button>
+  <button onclick="sendCmd('cambiarSaque')">Cambiar saque</button>
+  <button onclick="sendCmd('puntoEquipo1')">+ Punto Equipo 1</button>
+  <button onclick="sendCmd('puntoEquipo2')">+ Punto Equipo 2</button>
+  <div id="status" style="margin-top:32px;font-size:1.2rem;"></div>
+  <script>
+    let ws;
+    function connect() {
+      ws = new WebSocket('ws://' + location.hostname + ':8080');
+      ws.onopen = () => document.getElementById('status').textContent = 'Conectado';
+      ws.onclose = () => document.getElementById('status').textContent = 'Desconectado';
+      ws.onerror = () => document.getElementById('status').textContent = 'Error de conexión';
+    }
+    function sendCmd(cmd) {
+      if (ws && ws.readyState === 1) {
+        ws.send(cmd);
+      }
+    }
+    connect();
+  </script>
+</body>
+</html>
