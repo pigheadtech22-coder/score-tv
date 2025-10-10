@@ -13,6 +13,13 @@ export default function Publicidad({ videos, onEnd, duracion = 30 }) {
     };
   }, [duracion, onEnd]);
 
+  if (!videos || !videos[0]) {
+    return (
+      <div className="publicidad" style={{display:'flex',justifyContent:'center',alignItems:'center',width:'100vw',height:'100vh',background:'#222',color:'#fff',fontSize:'2rem'}}>
+        No hay video de publicidad disponible
+      </div>
+    );
+  }
   return (
     <div className="publicidad" style={{display:'flex',justifyContent:'center',alignItems:'center',width:'100vw',height:'100vh',background:'#222'}}>
         <video

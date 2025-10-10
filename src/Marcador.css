@@ -2,3 +2,10 @@
   background: #43b3ae !important; /* Pantone 16-5422 TCX Blue Curacao */
   transition: background 0.3s;
 }
+
+.golden-point {
+  background: #ffd700 !important; /* Gold for punto de oro */
+  color: #222 !important;
+  font-weight: bold;
+  transition: background 0.3s, color 0.3s;
+}

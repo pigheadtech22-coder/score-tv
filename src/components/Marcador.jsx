@@ -14,11 +14,13 @@ export default function Marcador({ player1, player2, score1, score2, set, server
 		const pareja2 = Array.isArray(player2) ? player2 : [player2];
 		const jugadores1 = pareja1.map(nombre => jugadores.find(j => j.nombre === nombre));
 		const jugadores2 = pareja2.map(nombre => jugadores.find(j => j.nombre === nombre));
+	// Highlight amarillo solo si ambos scores son 40 y goldenPoint está activo
+	const isGoldenPoint = score1 === 40 && score2 === 40 && goldenPoint;
 
 		return (
 			<div className="marcador-layout">
 				<div className="marcador-header">
-					<div className="marcador-title">CIRCUITO APJ ETAPA 17</div>
+					<div className="marcador-title">CIRCUITO APJ ETAPA 18 PWC</div>
 					<div className="marcador-subtitle">FINAL 1ERA</div>
 				</div>
 			<table className="marcador-table">
@@ -57,7 +59,7 @@ export default function Marcador({ player1, player2, score1, score2, set, server
 																					{tieBreakMode ? (
 																						<td className="marcador-game" style={{background:'#d32f2f',color:'#fff',fontWeight:'bold',fontSize:'2rem',minWidth:'60px',padding:'4px 8px'}}>{tieBreakScore1}</td>
 																					) : (
-																						<td className={score1 === 40 && score2 === 40 && goldenPoint ? "marcador-game golden-point" : "marcador-game"} style={{minWidth:'90px',fontSize:'3rem',padding:'8px 12px'}}>{score1}</td>
+																						<td className={isGoldenPoint ? "marcador-game golden-point" : "marcador-game"} style={{minWidth:'90px',fontSize:'3rem',padding:'8px 12px'}}>{score1}</td>
 																					)}
 					</tr>
 					<tr>
@@ -81,7 +83,7 @@ export default function Marcador({ player1, player2, score1, score2, set, server
 																					{tieBreakMode ? (
 																						<td className="marcador-game" style={{background:'#d32f2f',color:'#fff',fontWeight:'bold',fontSize:'2rem',minWidth:'60px',padding:'4px 8px'}}>{tieBreakScore2}</td>
 																					) : (
-																						<td className={score1 === 40 && score2 === 40 && goldenPoint ? "marcador-game golden-point" : "marcador-game"} style={{minWidth:'90px',fontSize:'3rem',padding:'8px 12px'}}>{score2}</td>
+																						<td className={isGoldenPoint ? "marcador-game golden-point" : "marcador-game"} style={{minWidth:'90px',fontSize:'3rem',padding:'8px 12px'}}>{score2}</td>
 																					)}
 					</tr>
 				</tbody>

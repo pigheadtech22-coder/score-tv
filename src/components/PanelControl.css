@@ -1,0 +1,6 @@
+.panel-control-layout {
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+}

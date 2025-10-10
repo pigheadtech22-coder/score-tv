@@ -1,31 +1,137 @@
 [
-	{"id":1,"nombre":"Milton Feijoó","foto":"/jugadores/milton.jpeg"},
-	{"id":2,"nombre":"Adrian Reynafe","foto":"/jugadores/adrian.jpeg"},
-	{"id":3,"nombre":"Nico Alessandro","foto":"/jugadores/nico.jpeg"},
-	{"id":4,"nombre":"Martin Medon","foto":"/jugadores/martin.jpeg"},
-	{"id":5,"nombre":"RAFAEL BUGARINI","foto":"/jugadores/rafael.jpeg"},
-	{"id":6,"nombre":"PEDRO MENÉNDEZ","foto":"/jugadores/pedro.jpeg"},
-	{"id":7,"nombre":"DANIEL SALDAÑA","foto":"/jugadores/daniel.jpeg"},
-	{"id":8,"nombre":"JAVIER MARTIN","foto":"/jugadores/javier.jpeg"},
-	{"id":9,"nombre":"Alex Delgadillo","foto":"/jugadores/alex.jpeg"},
-	{"id":10,"nombre":"Andres Aguilar","foto":"/jugadores/andres.jpeg"},
-	{"id":11,"nombre":"Ignacio Caceres","foto":"/jugadores/nacho.jpeg"},
-	{"id":12,"nombre":"Luciano Mansilla","foto":"/jugadores/luciano.jpeg"},
-	{"id":13,"nombre":"Fernando Alzogaray","foto":"/jugadores/alzo.jpeg"},
-	{"id":14,"nombre":"JuanRy","foto":"/jugadores/juanry.jpeg"},
-	{"id":15,"nombre":"Julian Dos Santos","foto":"/jugadores/july.jpeg"},
-	{"id":16,"nombre":"Adrian Victoria","foto":"/jugadores/adrianv.jpeg"},
-	{"id":17,"nombre":"Rodrigo Zavala","foto":"/jugadores/rodrigo.jpeg"},
-	{"id":18,"nombre":"Mauricio Zavala","foto":"/jugadores/mauricio.jpeg"},
-	{"id":19,"nombre":"Daniel Oximea","foto":"/jugadores/oxi.jpeg"},
-	{"id":20,"nombre":"Jonathan Vargas","foto":"/jugadores/jonathan.jpeg"},
-	{"id":17,"nombre":"Rodrigo Meza","foto":"/jugadores/rodrigom.jpeg"},
-	{"id":18,"nombre":"Julian Toscano","foto":"/jugadores/julian.jpeg"},
-	{"id":19,"nombre":"Cesar Arce","foto":"/jugadores/cesar.jpeg"},
-	{"id":20,"nombre":"Tadeo Gallo","foto":"/jugadores/tadeo.jpeg"},
-	{"id":21,"nombre":"Augusto Mendoza","foto":"/jugadores/augusto.jpeg"},
-	{"id":22,"nombre":"Arturo Viruete","foto":"/jugadores/arturov.jpeg"},
-	{"id":23,"nombre":"Eduardo Mendoza","foto":"/jugadores/eduardom.jpeg"},
-	{"id":24,"nombre":"Luis Pineda","foto":"/jugadores/luisp.jpeg"}
-	
+  {
+    "id": 1,
+    "nombre": "Milton Feijoó",
+    "foto": "/jugadores/milton.jpeg"
+  },
+  {
+    "id": 2,
+    "nombre": "Adrian Reynafe",
+    "foto": "/jugadores/adrian.jpeg"
+  },
+  {
+    "id": 3,
+    "nombre": "Nico Alessandro",
+    "foto": "/jugadores/nico.jpeg"
+  },
+  {
+    "id": 4,
+    "nombre": "Martin Medon",
+    "foto": "/jugadores/martin.jpeg"
+  },
+  {
+    "id": 5,
+    "nombre": "RAFAEL BUGARINI",
+    "foto": "/jugadores/rafael.jpeg"
+  },
+  {
+    "id": 6,
+    "nombre": "PEDRO MENÉNDEZ",
+    "foto": "/jugadores/pedro.jpeg"
+  },
+  {
+    "id": 7,
+    "nombre": "DANIEL SALDAÑA",
+    "foto": "/jugadores/daniel.jpeg"
+  },
+  {
+    "id": 8,
+    "nombre": "JAVIER MARTIN",
+    "foto": "/jugadores/javier.jpeg"
+  },
+  {
+    "id": 10,
+    "nombre": "Andres Aguilar",
+    "foto": "/jugadores/andres.jpeg"
+  },
+  {
+    "id": 11,
+    "nombre": "Ignacio Caceres",
+    "foto": "/jugadores/nacho.jpeg"
+  },
+  {
+    "id": 12,
+    "nombre": "Luciano Mansilla",
+    "foto": "/jugadores/luciano.jpeg"
+  },
+  {
+    "id": 13,
+    "nombre": "Fernando Alzogaray",
+    "foto": "/jugadores/alzo.jpeg"
+  },
+  {
+    "id": 14,
+    "nombre": "JuanRy",
+    "foto": "/jugadores/juanry.jpeg"
+  },
+  {
+    "id": 15,
+    "nombre": "Julian Dos Santos",
+    "foto": "/jugadores/july.jpeg"
+  },
+  {
+    "id": 16,
+    "nombre": "Adrian Victoria",
+    "foto": "/jugadores/adrianv.jpeg"
+  },
+  {
+    "id": 18,
+    "nombre": "Mauricio Zavala",
+    "foto": "/jugadores/mauricio.jpeg"
+  },
+  {
+    "id": 19,
+    "nombre": "Daniel Oximea",
+    "foto": "/jugadores/oxi.jpeg"
+  },
+  {
+    "id": 18,
+    "nombre": "Julian Toscano",
+    "foto": "/jugadores/julian.jpeg"
+  },
+  {
+    "id": 19,
+    "nombre": "Cesar Arce",
+    "foto": "/jugadores/cesar.jpeg"
+  },
+  {
+    "id": 21,
+    "nombre": "Augusto Mendoza",
+    "foto": "/jugadores/augusto.jpeg"
+  },
+  {
+    "id": 22,
+    "nombre": "Arturo Viruete",
+    "foto": "/jugadores/arturov.jpeg"
+  },
+  {
+    "id": 23,
+    "nombre": "Eduardo Mendoza",
+    "foto": "/jugadores/eduardom.jpeg"
+  },
+  {
+    "id": 24,
+    "nombre": "Luis Pineda",
+    "foto": "/jugadores/luisp.jpeg"
+  },
+  {
+    "id": 1759692658474,
+    "nombre": "Tadeo Gallo",
+    "foto": "/jugadores/WhatsApp Image 2025-10-05 at 13.25.43 (3).png"
+  },
+  {
+    "id": 1759692701716,
+    "nombre": "Fernando Cardiel",
+    "foto": "/jugadores/WhatsApp Image 2025-10-05 at 13.25.43 (2).png"
+  },
+  {
+    "id": 1759692754840,
+    "nombre": "Rodrigo Meza",
+    "foto": "/jugadores/WhatsApp Image 2025-10-05 at 13.25.43.png"
+  },
+  {
+    "id": 1759692797730,
+    "nombre": "Marcelo Mier",
+    "foto": "/jugadores/WhatsApp Image 2025-10-05 at 13.25.43 (1).png"
+  }
 ]
