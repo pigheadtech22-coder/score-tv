@@ -36,7 +36,7 @@ wss.on('connection', function connection(ws) {
       }
     });
     // Activar bandera en ESP32 según comando recibido
-    if (['puntoEquipo1','puntoEquipo2','cambiarSaque','cambioCancha'].includes(message)) {
+    if (['puntoEquipo1','puntoEquipo2','restarPuntoEquipo1','restarPuntoEquipo2','cambiarSaque','cambioCancha'].includes(message)) {
       activarBanderaESP32(message);
     }
   });

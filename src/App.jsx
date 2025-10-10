@@ -120,6 +120,72 @@ import React, { useState, useEffect } from 'react';
     if (set < 1) set = 1;
     return { ...m, score1, score2, sets, set, tieBreakMode, tieBreakScore1, tieBreakScore2 };
   }
+
+  // Lógica unificada para restar punto equipo 1
+  function restarPuntoEquipo1(m) {
+    const pointOrder = [0, 15, 30, 40];
+    let score1 = m.score1;
+    let score2 = m.score2;
+    let sets = Array.isArray(m.sets) ? m.sets.map(arr => [...arr]) : [[0,0,0],[0,0,0]];
+    let set = m.set || 1;
+    let tieBreakMode = m.tieBreakMode;
+    let tieBreakScore1 = m.tieBreakScore1;
+    let tieBreakScore2 = m.tieBreakScore2;
+    
+    if (tieBreakMode) {
+      if (tieBreakScore1 > 0) {
+        tieBreakScore1 -= 1;
+      }
+    } else {
+      if (score1 > 0) {
+        const idx = pointOrder.indexOf(score1);
+        if (idx > 0) {
+          score1 = pointOrder[idx - 1];
+        }
+      } else if (sets[0][set-1] > 0) {
+        // Si el score es 0 pero hay games ganados, retroceder un game
+        sets[0][set-1] -= 1;
+        score1 = 40;
+        score2 = 30; // Asumir que era 40-30 antes del game
+      }
+    }
+    
+    if (set < 1) set = 1;
+    return { ...m, score1, score2, sets, set, tieBreakMode, tieBreakScore1, tieBreakScore2 };
+  }
+
+  // Lógica unificada para restar punto equipo 2
+  function restarPuntoEquipo2(m) {
+    const pointOrder = [0, 15, 30, 40];
+    let score1 = m.score1;
+    let score2 = m.score2;
+    let sets = Array.isArray(m.sets) ? m.sets.map(arr => [...arr]) : [[0,0,0],[0,0,0]];
+    let set = m.set || 1;
+    let tieBreakMode = m.tieBreakMode;
+    let tieBreakScore1 = m.tieBreakScore1;
+    let tieBreakScore2 = m.tieBreakScore2;
+    
+    if (tieBreakMode) {
+      if (tieBreakScore2 > 0) {
+        tieBreakScore2 -= 1;
+      }
+    } else {
+      if (score2 > 0) {
+        const idx = pointOrder.indexOf(score2);
+        if (idx > 0) {
+          score2 = pointOrder[idx - 1];
+        }
+      } else if (sets[1][set-1] > 0) {
+        // Si el score es 0 pero hay games ganados, retroceder un game
+        sets[1][set-1] -= 1;
+        score2 = 40;
+        score1 = 30; // Asumir que era 40-30 antes del game
+      }
+    }
+    
+    if (set < 1) set = 1;
+    return { ...m, score1, score2, sets, set, tieBreakMode, tieBreakScore1, tieBreakScore2 };
+  }
 import ReactDOM from 'react-dom';
 
 
@@ -210,17 +276,28 @@ function App() {
   const [jugadores, setJugadores] = useState([]);
   // Cronómetro de match time
   const [matchTimeActive, setMatchTimeActive] = useState(false);
+  const [matchStartTime, setMatchStartTime] = useState(null);
+  const [matchPausedTime, setMatchPausedTime] = useState(0);
   const [matchSeconds, setMatchSeconds] = useState(0);
 
   useEffect(() => {
     let timer;
     if (matchTimeActive) {
+      if (!matchStartTime) {
+        setMatchStartTime(Date.now() - (matchPausedTime * 1000));
+      }
       timer = setInterval(() => {
-        setMatchSeconds(s => s + 1);
-  }, 500);
+        const elapsed = Math.floor((Date.now() - matchStartTime) / 1000);
+        setMatchSeconds(elapsed);
+      }, 1000);
+    } else {
+      if (matchStartTime) {
+        setMatchPausedTime(matchSeconds);
+        setMatchStartTime(null);
+      }
     }
     return () => clearInterval(timer);
-  }, [matchTimeActive]);
+  }, [matchTimeActive, matchStartTime, matchSeconds]);
 
   // Formatear segundos a HH:MM:SS
     function formatMatchTime(secs) {
@@ -244,7 +321,7 @@ function App() {
         if (flagEnProceso.current) {
             const flags = await getFlags();
             // Verifica que flags no sea null antes de acceder a sus propiedades
-            if (flags && !flags.punto1 && !flags.punto2 && !flags.cambioSaque && !flags.cambioCancha) {
+            if (flags && !flags.punto1 && !flags.punto2 && !flags.restarPunto1 && !flags.restarPunto2 && !flags.cambioSaque && !flags.cambioCancha) {
               flagEnProceso.current = false;
               if (resetTimeoutRef.current) {
                 clearTimeout(resetTimeoutRef.current);
@@ -255,7 +332,7 @@ function App() {
             else if (!resetTimeoutRef.current) {
               resetTimeoutRef.current = setTimeout(async () => {
                 const f = await getFlags();
-                if (f.punto1 || f.punto2 || f.cambioSaque || f.cambioCancha) {
+                if (f.punto1 || f.punto2 || f.restarPunto1 || f.restarPunto2 || f.cambioSaque || f.cambioCancha) {
                   await resetFlags();
                 }
                 resetTimeoutRef.current = null;
@@ -279,6 +356,14 @@ function App() {
             banderaProcesada = true;
             nuevoMarcador = m => procesarPuntoEquipo2({ ...m, connectionStatus: undefined });
           }
+          if (flags.restarPunto1) {
+            banderaProcesada = true;
+            nuevoMarcador = m => restarPuntoEquipo1({ ...m, connectionStatus: undefined });
+          }
+          if (flags.restarPunto2) {
+            banderaProcesada = true;
+            nuevoMarcador = m => restarPuntoEquipo2({ ...m, connectionStatus: undefined });
+          }
           if (flags.cambioSaque) {
             banderaProcesada = true;
             nuevoMarcador = m => ({ ...m, server: m.server === 1 ? 2 : 1, connectionStatus: undefined });
@@ -297,7 +382,7 @@ function App() {
               if (!resetTimeoutRef.current) {
                 resetTimeoutRef.current = setTimeout(async () => {
                   const f = await getFlags();
-                  if (f.punto1 || f.punto2 || f.cambioSaque || f.cambioCancha) {
+                  if (f.punto1 || f.punto2 || f.restarPunto1 || f.restarPunto2 || f.cambioSaque || f.cambioCancha) {
                     await resetFlags();
                   }
                   resetTimeoutRef.current = null;
@@ -339,109 +424,13 @@ function App() {
             } else if (cmd === 'cambiarSaque') {
               setMarcador(m => ({ ...m, server: m.server === 1 ? 2 : 1 }));
             } else if (cmd === 'puntoEquipo1') {
-              setMarcador(m => {
-                const pointOrder = [0, 15, 30, 40];
-                let score1 = m.score1;
-                let score2 = m.score2;
-                let sets = Array.isArray(m.sets) ? m.sets.map(arr => [...arr]) : [[0,0,0],[0,0,0]];
-                let set = m.set || 1;
-                let tieBreakMode = m.tieBreakMode;
-                let tieBreakScore1 = m.tieBreakScore1;
-                let tieBreakScore2 = m.tieBreakScore2;
-                if (!tieBreakMode && sets[0][set-1] === 6 && sets[1][set-1] === 6) {
-                  tieBreakMode = true;
-                  tieBreakScore1 = 0;
-                  tieBreakScore2 = 0;
-                  score1 = 0;
-                  score2 = 0;
-                }
-                if (tieBreakMode) {
-                  tieBreakScore1 += 1;
-                  if (tieBreakScore1 >= 7 && tieBreakScore1 - tieBreakScore2 >= 2) {
-                    sets[0][set-1] += 1;
-                    tieBreakMode = false;
-                    tieBreakScore1 = 0;
-                    tieBreakScore2 = 0;
-                    score1 = 0;
-                    score2 = 0;
-                    if (set < 3) {
-                      set += 1;
-                      sets[0][set-1] = 0;
-                      sets[1][set-1] = 0;
-                    }
-                  }
-                } else {
-                  if (score1 < 40) {
-                    score1 = pointOrder[pointOrder.indexOf(score1) + 1];
-                  } else {
-                    sets[0][set-1] += 1;
-                    score1 = 0;
-                    score2 = 0;
-                    let limiteSet = (sets[0][set-1] === 6 && sets[1][set-1] === 5) || (sets[0][set-1] === 5 && sets[1][set-1] === 6) ? 7 : 6;
-                    if (sets[0][set-1] >= limiteSet && !(sets[0][set-1] === 6 && sets[1][set-1] === 6)) {
-                      if (set < 3) {
-                        set += 1;
-                        sets[0][set-1] = 0;
-                        sets[1][set-1] = 0;
-                      }
-                    }
-                  }
-                }
-                if (set < 1) set = 1;
-                return { ...m, score1, score2, sets, set, tieBreakMode, tieBreakScore1, tieBreakScore2 };
-              });
+              setMarcador(m => procesarPuntoEquipo1(m));
             } else if (cmd === 'puntoEquipo2') {
-              setMarcador(m => {
-                const pointOrder = [0, 15, 30, 40];
-                let score1 = m.score1;
-                let score2 = m.score2;
-                let sets = Array.isArray(m.sets) ? m.sets.map(arr => [...arr]) : [[0,0,0],[0,0,0]];
-                let set = m.set || 1;
-                let tieBreakMode = m.tieBreakMode;
-                let tieBreakScore1 = m.tieBreakScore1;
-                let tieBreakScore2 = m.tieBreakScore2;
-                if (!tieBreakMode && sets[0][set-1] === 6 && sets[1][set-1] === 6) {
-                  tieBreakMode = true;
-                  tieBreakScore1 = 0;
-                  tieBreakScore2 = 0;
-                  score1 = 0;
-                  score2 = 0;
-                }
-                if (tieBreakMode) {
-                  tieBreakScore2 += 1;
-                  if (tieBreakScore2 >= 7 && tieBreakScore2 - tieBreakScore1 >= 2) {
-                    sets[1][set-1] += 1;
-                    tieBreakMode = false;
-                    tieBreakScore1 = 0;
-                    tieBreakScore2 = 0;
-                    score1 = 0;
-                    score2 = 0;
-                    if (set < 3) {
-                      set += 1;
-                      sets[0][set-1] = 0;
-                      sets[1][set-1] = 0;
-                    }
-                  }
-                } else {
-                  if (score2 < 40) {
-                    score2 = pointOrder[pointOrder.indexOf(score2) + 1];
-                  } else {
-                    sets[1][set-1] += 1;
-                    score1 = 0;
-                    score2 = 0;
-                    let limiteSet = (sets[0][set-1] === 6 && sets[1][set-1] === 5) || (sets[0][set-1] === 5 && sets[1][set-1] === 6) ? 7 : 6;
-                    if (sets[1][set-1] >= limiteSet && !(sets[0][set-1] === 6 && sets[1][set-1] === 6)) {
-                      if (set < 3) {
-                        set += 1;
-                        sets[0][set-1] = 0;
-                        sets[1][set-1] = 0;
-                      }
-                    }
-                  }
-                }
-                if (set < 1) set = 1;
-                return { ...m, score1, score2, sets, set, tieBreakMode, tieBreakScore1, tieBreakScore2 };
-              });
+              setMarcador(m => procesarPuntoEquipo2(m));
+            } else if (cmd === 'restarPuntoEquipo1') {
+              setMarcador(m => restarPuntoEquipo1(m));
+            } else if (cmd === 'restarPuntoEquipo2') {
+              setMarcador(m => restarPuntoEquipo2(m));
             }
           };
           ws.onerror = () => {
@@ -501,7 +490,6 @@ function App() {
       }
       return m;
     });
-    if (debug) setLogs(l => [...l, `[STATE] Modo cambiado a: ${modo}`]);
   }, [modo, debug]);
 
   // Log datos enviados (acciones de usuario)
@@ -509,13 +497,11 @@ function App() {
     if (debug) setLogs(l => [...l, `[ACTION] ${msg}`]);
   };
 
-  // Log tiempos de animación y duración de transiciones
+  // Handlers de animación
   const handleLogoAnimStart = () => {
-    if (debug) setLogs(l => [...l, `[ANIMATION] Logo animación iniciada: ${Date.now()}`]);
     setTransicionEnCurso(true);
   };
   const handleLogoAnimEnd = () => {
-    if (debug) setLogs(l => [...l, `[ANIMATION] Logo animación finalizada: ${Date.now()}`]);
     setTransicionEnCurso(false);
     setTimeout(() => {
       if (videosPublicidad.length > 0) {
@@ -600,7 +586,12 @@ function App() {
                         boxShadow: '0 -2px 8px #0002',
                       }}>
                         <button onClick={() => setMatchTimeActive(true)} style={{background:'#2ecc40',color:'#fff',padding:'8px',borderRadius:'6px'}}>Start Match Time</button>
-                        <button onClick={() => { setMatchTimeActive(false); setMatchSeconds(0); }} style={{background:'#ff4136',color:'#fff',padding:'8px',borderRadius:'6px'}}>Reset Match Time</button>
+                        <button onClick={() => { 
+                          setMatchTimeActive(false); 
+                          setMatchSeconds(0); 
+                          setMatchStartTime(null);
+                          setMatchPausedTime(0);
+                        }} style={{background:'#ff4136',color:'#fff',padding:'8px',borderRadius:'6px'}}>Reset Match Time</button>
                         <button onClick={() => {
                           logAccion('Botón cambio de cancha presionado');
                           setTransicionEnCurso(false); // Asegura que el logo se renderice
@@ -623,6 +614,16 @@ function App() {
                           logAccion('Botón + Punto Equipo 2 presionado');
                           setMarcador(m => procesarPuntoEquipo2(m));
                         }}>+ Punto Equipo 2</button>
+                        {/* Botón - Punto Equipo 1 */}
+                        <button onClick={() => {
+                          logAccion('Botón - Punto Equipo 1 presionado');
+                          setMarcador(m => restarPuntoEquipo1(m));
+                        }} style={{background:'#ff851b',color:'#fff',padding:'8px',borderRadius:'6px'}}>- Punto Equipo 1</button>
+                        {/* Botón - Punto Equipo 2 */}
+                        <button onClick={() => {
+                          logAccion('Botón - Punto Equipo 2 presionado');
+                          setMarcador(m => restarPuntoEquipo2(m));
+                        }} style={{background:'#ff851b',color:'#fff',padding:'8px',borderRadius:'6px'}}>- Punto Equipo 2</button>
                       </div>
                     )}
                     <Marcador
@@ -652,7 +653,12 @@ function App() {
                         setVideoIndex(idx => (idx + 1) % videosPublicidad.length);
                         setModo('marcador');
                         setTransicionEnCurso(false);
-                        setMatchSeconds(s => s + 40); // Suma duración del video al reloj
+                        // Si el match time estaba activo, ajustar el tiempo de inicio para incluir la duración del video
+                        if (matchTimeActive && matchStartTime) {
+                          setMatchStartTime(prev => prev - (40 * 1000)); // Resta 40 segundos al tiempo de inicio
+                        } else {
+                          setMatchPausedTime(prev => prev + 40); // Si estaba pausado, suma al tiempo pausado
+                        }
                         setMatchTimeActive(true); // Reactiva el match time
                       }}
                     />
