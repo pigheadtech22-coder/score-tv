@@ -9,7 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start:all": "concurrently \"npm run dev -- --host\" \"node remote-control-server.cjs\" \"node server.cjs\""
+    "start:all": "concurrently \"npm run dev -- --host\" \"node remote-control-server.cjs\" \"node server.cjs\"",
+    "start:production": "concurrently \"node server-production.cjs\" \"node remote-control-server.cjs\""
   },
   "dependencies": {
     "@babel/code-frame": "^7.27.1",
