@@ -39,6 +39,15 @@ app.post('/api/update-videos', express.json(), (req, res) => {
   const jsonPath = path.join(__dirname, 'public/videos.json');
   fs.writeFile(jsonPath, JSON.stringify(videos, null, 2), (err) => {
     if (err) return res.status(500).send('No se pudo guardar videos.json');
+    // Sincronizar videos.json con los archivos reales
+    const videosDir = path.join(__dirname, 'public/videos');
+    try {
+      const files = fs.readdirSync(videosDir).filter(f => f.endsWith('.mp4'));
+      fs.writeFileSync(jsonPath, JSON.stringify(files, null, 2), 'utf8');
+      console.log('videos.json sincronizado tras update:', files);
+    } catch (err) {
+      console.error('Error sincronizando videos.json:', err);
+    }
     res.send('OK');
   });
 });
@@ -58,6 +67,16 @@ app.post('/api/upload-video', upload.single('video'), (req, res) => {
       if (error) {
         console.error('Error al procesar video con FFmpeg:', error);
         return res.status(500).send('Error al procesar el video');
+      }
+      // Sincronizar videos.json con los archivos reales
+      const videosDir = path.join(__dirname, 'public/videos');
+      const jsonPath = path.join(__dirname, 'public/videos.json');
+      try {
+        const files = fs.readdirSync(videosDir).filter(f => f.endsWith('.mp4'));
+        fs.writeFileSync(jsonPath, JSON.stringify(files, null, 2), 'utf8');
+        console.log('videos.json sincronizado tras upload:', files);
+      } catch (err) {
+        console.error('Error sincronizando videos.json:', err);
       }
       res.send('OK');
     });
@@ -107,13 +126,36 @@ app.post('/api/delete-video', express.json(), (req, res) => {
   const videoPath = path.join(__dirname, 'public/videos', video);
   fs.unlink(videoPath, (err) => {
     if (err) return res.status(500).send('No se pudo eliminar el video');
+    // Sincronizar videos.json con los archivos reales
+    const videosDir = path.join(__dirname, 'public/videos');
+    const jsonPath = path.join(__dirname, 'public/videos.json');
+    try {
+      const files = fs.readdirSync(videosDir).filter(f => f.endsWith('.mp4'));
+      fs.writeFileSync(jsonPath, JSON.stringify(files, null, 2), 'utf8');
+      console.log('videos.json sincronizado tras delete:', files);
+    } catch (err) {
+      console.error('Error sincronizando videos.json:', err);
+    }
     res.send('OK');
   });
 });
 
 
 // Servir archivos estáticos (React y videos)
-app.use(express.static(path.join(__dirname, 'public')));
+// Servir archivos estáticos (React)
+// Servir archivos estáticos (solo React, no videos)
+app.use('/static', express.static(path.join(__dirname, 'public')));
+
+// Endpoint para servir videos MP4 con el header correcto
+app.get('/videos/:videoName', (req, res) => {
+  const videoName = req.params.videoName;
+  const videoPath = path.join(__dirname, 'public/videos', videoName);
+  if (!fs.existsSync(videoPath)) {
+    return res.status(404).send('Video no encontrado');
+  }
+  res.setHeader('Content-Type', 'video/mp4');
+  res.sendFile(videoPath);
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

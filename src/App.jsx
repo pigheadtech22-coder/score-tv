@@ -247,15 +247,23 @@ function App() {
         if (res.ok) {
           const data = await res.json();
           setVideosPublicidad(Array.isArray(data) ? data : []);
+          window.videosPublicidadOriginal = Array.isArray(data) ? data : [];
         } else {
           setVideosPublicidad([]);
+          window.videosPublicidadOriginal = [];
         }
       } catch {
         setVideosPublicidad([]);
+        window.videosPublicidadOriginal = [];
       }
     }
     fetchVideosPublicidad();
   }, []);
+
+  // Reiniciar videoIndex cuando videosPublicidad cambie
+  useEffect(() => {
+    setVideoIndex(0);
+  }, [videosPublicidad]);
   const [transicionEnCurso, setTransicionEnCurso] = useState(false);
   // ...existing code...
   const [videoIndex, setVideoIndex] = useState(0);
@@ -506,7 +514,7 @@ function App() {
     setTimeout(() => {
       if (videosPublicidad.length > 0) {
         setModo('publicidad');
-        setVideoIndex(idx => (idx + 1) % videosPublicidad.length);
+        // No avanzar el índice aquí, solo en onEnd del video
       } else {
         setModo('marcador');
       }

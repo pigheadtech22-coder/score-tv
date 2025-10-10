@@ -9,7 +9,7 @@ const PadelBall = () => (
 	</svg>
 );
 
-export default function Marcador({ player1, player2, score1, score2, set, server, jugadores, sets = [ [0,0,0], [0,0,0] ], game = [0,0], matchTime = '00:32:25', goldenPoint = true, setMax = 6, tieBreakMode = false, tieBreakScore1 = 0, tieBreakScore2 = 0 }) {
+export default function Marcador({ player1, player2, score1, score2, set, server, jugadores, sets = [ [0,0,0], [0,0,0] ], game = [0,0], matchTime = '00:32:25', goldenPoint = true, setMax = 6, tieBreakMode = false, tieBreakScore1 = 0, tieBreakScore2 = 0, torneo = 'CIRCUITO APJ ETAPA 18 PWC', fase = 'FINAL 1ERA' }) {
 		const pareja1 = Array.isArray(player1) ? player1 : [player1];
 		const pareja2 = Array.isArray(player2) ? player2 : [player2];
 		const jugadores1 = pareja1.map(nombre => jugadores.find(j => j.nombre === nombre));
@@ -17,12 +17,12 @@ export default function Marcador({ player1, player2, score1, score2, set, server
 	// Highlight amarillo solo si ambos scores son 40 y goldenPoint está activo
 	const isGoldenPoint = score1 === 40 && score2 === 40 && goldenPoint;
 
-		return (
-			<div className="marcador-layout">
-				<div className="marcador-header">
-					<div className="marcador-title">CIRCUITO APJ ETAPA 18 PWC</div>
-					<div className="marcador-subtitle">FINAL 1ERA</div>
-				</div>
+			return (
+				<div className="marcador-layout">
+					<div className="marcador-header">
+						<div className="marcador-title">{torneo}</div>
+						<div className="marcador-subtitle">{fase}</div>
+					</div>
 			<table className="marcador-table">
 				<thead>
 					<tr>
