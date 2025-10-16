@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Control Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #2d3748;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #4a5568;
+            color: white;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #2d3748;
+        }
+        .punto1 { background: #e53e3e; }
+        .punto2 { background: #3182ce; }
+        .punto1:hover { background: #c53030; }
+        .punto2:hover { background: #2c5aa0; }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #1a202c;
+            border-radius: 5px;
+        }
+        .log {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎾 Panel Control Debug</h1>
+        
+        <div class="buttons">
+            <button class="punto1" onclick="sendPoint(1)">🎾 PUNTO J1</button>
+            <button class="punto2" onclick="sendPoint(2)">🎾 PUNTO J2</button>
+        </div>
+        
+        <div class="status">
+            <h3>Estado del Servidor:</h3>
+            <div id="serverStatus">Conectando...</div>
+        </div>
+        
+        <div class="log" id="log">
+            <div>🚀 Panel iniciado...</div>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function sendPoint(player) {
+            const endpoint = `http://localhost:3001/api/punto${player}`;
+            log(`🎯 Enviando punto para jugador ${player}...`);
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    log(`✅ Punto enviado correctamente: ${JSON.stringify(result)}`);
+                } else {
+                    log(`❌ Error HTTP: ${response.status}`);
+                }
+            } catch (error) {
+                log(`💥 Error de red: ${error.message}`);
+            }
+        }
+
+        // Verificar estado del servidor cada 5 segundos
+        async function checkServer() {
+            try {
+                const response = await fetch('http://localhost:3001/api/flags');
+                if (response.ok) {
+                    const flags = await response.json();
+                    document.getElementById('serverStatus').innerHTML = 
+                        `🟢 Conectado - Flags: ${JSON.stringify(flags)}`;
+                } else {
+                    document.getElementById('serverStatus').innerHTML = 
+                        `🟡 Servidor responde pero con error: ${response.status}`;
+                }
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = 
+                    `🔴 Desconectado: ${error.message}`;
+            }
+        }
+
+        // Verificar conexión cada 5 segundos
+        setInterval(checkServer, 5000);
+        checkServer(); // Primera verificación inmediata
+
+        log('✅ Panel de control debug listo');
+    </script>
+</body>
+</html>

@@ -37,7 +37,8 @@ import React, { useState, useEffect } from 'react';
         if (idx !== -1 && idx < pointOrder.length - 1) {
           score1 = pointOrder[idx + 1];
         } else {
-          score1 = 15; // fallback por si el score no es válido
+          // Solo cambiar si hay un score válido actual, sino mantener el estado
+          console.warn('⚠️ Score inválido para jugador 1:', score1, 'manteniendo estado actual');
         }
       } else {
         sets[0][set-1] += 1;
@@ -101,7 +102,8 @@ import React, { useState, useEffect } from 'react';
         if (idx !== -1 && idx < pointOrder.length - 1) {
           score2 = pointOrder[idx + 1];
         } else {
-          score2 = 15; // fallback por si el score no es válido
+          // Solo cambiar si hay un score válido actual, sino mantener el estado
+          console.warn('⚠️ Score inválido para jugador 2:', score2, 'manteniendo estado actual');
         }
       } else {
         sets[1][set-1] += 1;
@@ -351,6 +353,7 @@ function App() {
         }
         try {
           const flags = await getFlags();
+          console.log('🔍 Flags obtenidas:', flags);
           if (!flags) {
             setMarcador(m => ({ ...m, connectionStatus: 'Conectando a ESP32...' }));
             return;

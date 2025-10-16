@@ -69,14 +69,19 @@ app.get('/flags', (req, res) => {
   }
 });
 
+// Endpoint para React frontend (alias de /flags)
+app.get('/api/flags', (req, res) => {
+  // Devolver flags en cualquier plataforma para pruebas
+  res.json(internalFlags);
+});
+
 // Endpoint para que ESP32s reseteén las flags
 app.post('/resetFlags', (req, res) => {
-  if (platform === 'pi') {
-    Object.keys(internalFlags).forEach(key => {
-      internalFlags[key] = false;
-    });
-    console.log('🔄 Flags internas reseteadas');
-  }
+  // Reset en cualquier plataforma para pruebas
+  Object.keys(internalFlags).forEach(key => {
+    internalFlags[key] = false;
+  });
+  console.log('🔄 Flags internas reseteadas (platform:', platform, ')');
   res.send('OK');
 });
 
@@ -84,19 +89,17 @@ app.post('/resetFlags', (req, res) => {
 
 // Punto para jugador 1 (compatible con ESP32 externo y panel web)
 app.post('/api/punto1', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.punto1 = true;
-    console.log('🏓 API: Punto para jugador 1');
-  }
+  // Activar flags en cualquier plataforma para pruebas
+  internalFlags.punto1 = true;
+  console.log('🏓 API: Punto para jugador 1 (platform:', platform, ')');
   res.json({ success: true, action: 'punto1', platform });
 });
 
 // Punto para jugador 2 (compatible con ESP32 externo y panel web)
 app.post('/api/punto2', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.punto2 = true;
-    console.log('🏓 API: Punto para jugador 2');
-  }
+  // Activar flags en cualquier plataforma para pruebas
+  internalFlags.punto2 = true;
+  console.log('🏓 API: Punto para jugador 2 (platform:', platform, ')');
   res.json({ success: true, action: 'punto2', platform });
 });
 
