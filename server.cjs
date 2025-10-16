@@ -89,17 +89,27 @@ app.post('/resetFlags', (req, res) => {
 
 // Punto para jugador 1 (compatible con ESP32 externo y panel web)
 app.post('/api/punto1', (req, res) => {
-  // Activar flags en cualquier plataforma para pruebas
-  internalFlags.punto1 = true;
-  console.log('🏓 API: Punto para jugador 1 (platform:', platform, ')');
+  if (platform === 'pi') {
+    // En Pi: activar flag interna para ESP32/panel web
+    internalFlags.punto1 = true;
+    console.log('🏓 API: Punto para jugador 1 (Pi - flag interna)');
+  } else {
+    // En PC: no activar flags internas (ESP32 externo maneja sus propias flags)
+    console.log('🏓 API: Punto para jugador 1 (PC - comando recibido, no flag interna)');
+  }
   res.json({ success: true, action: 'punto1', platform });
 });
 
 // Punto para jugador 2 (compatible con ESP32 externo y panel web)
 app.post('/api/punto2', (req, res) => {
-  // Activar flags en cualquier plataforma para pruebas
-  internalFlags.punto2 = true;
-  console.log('🏓 API: Punto para jugador 2 (platform:', platform, ')');
+  if (platform === 'pi') {
+    // En Pi: activar flag interna
+    internalFlags.punto2 = true;
+    console.log('🏓 API: Punto para jugador 2 (Pi - flag interna)');
+  } else {
+    // En PC: no activar flags internas
+    console.log('🏓 API: Punto para jugador 2 (PC - comando recibido, no flag interna)');
+  }
   res.json({ success: true, action: 'punto2', platform });
 });
 
