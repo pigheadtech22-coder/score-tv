@@ -257,6 +257,11 @@ app.post('/api/delete-video', express.json(), (req, res) => {
 // Servir archivos estáticos (solo React, no videos)
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
+// Ruta directa para control remoto (sin /static)
+app.get('/control-remoto.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/control-remoto.html'));
+});
+
 // Endpoint para servir videos MP4 con el header correcto
 app.get('/videos/:videoName', (req, res) => {
   const videoName = req.params.videoName;
@@ -266,6 +271,117 @@ app.get('/videos/:videoName', (req, res) => {
   }
   res.setHeader('Content-Type', 'video/mp4');
   res.sendFile(videoPath);
+});
+
+// ====== RUTAS API PARA CONTROL REMOTO WEB ======
+
+// Punto para jugador 1
+app.post('/api/punto1', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.punto1 = true;
+    console.log('🏓 API: Punto para jugador 1');
+  }
+  res.json({ success: true, action: 'punto1', platform });
+});
+
+// Punto para jugador 2
+app.post('/api/punto2', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.punto2 = true;
+    console.log('🏓 API: Punto para jugador 2');
+  }
+  res.json({ success: true, action: 'punto2', platform });
+});
+
+// Restar punto jugador 1
+app.post('/api/restar1', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.restarPunto1 = true;
+    console.log('🏓 API: Restar punto jugador 1');
+  }
+  res.json({ success: true, action: 'restar1', platform });
+});
+
+// Restar punto jugador 2
+app.post('/api/restar2', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.restarPunto2 = true;
+    console.log('🏓 API: Restar punto jugador 2');
+  }
+  res.json({ success: true, action: 'restar2', platform });
+});
+
+// Cambio de saque
+app.post('/api/cambioSaque', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.cambioSaque = true;
+    console.log('🏓 API: Cambio de saque');
+  }
+  res.json({ success: true, action: 'cambioSaque', platform });
+});
+
+// Cambio de cancha
+app.post('/api/cambioCancha', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.cambioCancha = true;
+    console.log('🏓 API: Cambio de cancha');
+  }
+  res.json({ success: true, action: 'cambioCancha', platform });
+});
+
+// Reset juego
+app.post('/api/reset', (req, res) => {
+  if (platform === 'pi') {
+    // Resetear todas las flags
+    Object.keys(internalFlags).forEach(key => {
+      internalFlags[key] = false;
+    });
+    console.log('🏓 API: Reset del juego');
+  }
+  res.json({ success: true, action: 'reset', platform });
+});
+
+// Obtener estado actual de las flags (para Pi)
+app.get('/api/flags', (req, res) => {
+  if (platform === 'pi') {
+    res.json(internalFlags);
+  } else {
+    res.json({ message: 'Solo disponible en modo Pi', platform });
+  }
+});
+
+// Limpiar flags (para Pi)
+app.post('/api/clear-flags', (req, res) => {
+  if (platform === 'pi') {
+    Object.keys(internalFlags).forEach(key => {
+      internalFlags[key] = false;
+    });
+    console.log('🧹 API: Flags limpiadas');
+  }
+  res.json({ success: true, action: 'clear-flags', platform });
+});
+
+// Obtener marcador actual (placeholder - aquí se conectaría con el estado real)
+app.get('/api/marcador', (req, res) => {
+  // TODO: Conectar con el estado real del marcador
+  res.json({
+    score1: 0,
+    score2: 0,
+    set: 1,
+    sets: [[0,0,0],[0,0,0]],
+    server: 1,
+    platform: platform
+  });
+});
+
+// Información del sistema
+app.get('/api/info', (req, res) => {
+  res.json({
+    platform: platform,
+    mode: platform === 'pi' ? 'internal' : 'external',
+    version: '1.0.0',
+    timestamp: new Date().toISOString()
+  });
 });
 
 const PORT = process.env.PORT || 3000;
