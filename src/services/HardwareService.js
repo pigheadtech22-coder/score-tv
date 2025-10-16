@@ -7,6 +7,7 @@ class ESP32Service {
     // Primero intentar servidor local (para Pi), luego ESP32 externo
     this.localServerURL = `http://${window.location.hostname}:3000`; // Puerto original
     this.esp32IP = 'http://192.168.0.101';
+    this.platformCache = null; // Cache de la plataforma detectada
     this.flags = {
       punto1: false,
       punto2: false,
@@ -17,10 +18,34 @@ class ESP32Service {
     };
   }
 
+  // Detectar plataforma preguntando al servidor local
+  async detectPlatform() {
+    if (this.platformCache !== null) {
+      return this.platformCache;
+    }
+
+    try {
+      const response = await fetch(`${this.localServerURL}/api/info`, {
+        cache: "no-store",
+        mode: "cors"
+      });
+      if (response.ok) {
+        const info = await response.json();
+        this.platformCache = info.platform === 'pi';
+        console.log(`🔍 Plataforma detectada: ${info.platform.toUpperCase()} (${this.platformCache ? 'Pi' : 'PC'})`);
+        return this.platformCache;
+      }
+    } catch {
+      // Si no puede conectar al servidor local, asumir que es PC (desarrollo)
+      console.log('🔍 No se pudo conectar al servidor local, asumiendo modo PC');
+      this.platformCache = false;
+      return this.platformCache;
+    }
+  }
+
   async getFlags() {
-    // Detectar plataforma basándose en la URL del navegador
-    // Solo considerar Pi si estamos accediendo desde la IP específica de Pi
-    const isPi = window.location.hostname.includes('192.168.0.237');
+    // Detectar plataforma dinámicamente preguntando al servidor
+    const isPi = await this.detectPlatform();
     
     if (isPi) {
       // En Pi: primero intentar servidor local (Pi interna)
@@ -38,7 +63,7 @@ class ESP32Service {
         console.log('⚠️ [PI] Servidor local no disponible, intentando ESP32 externo...');
       }
     } else {
-      // En PC (localhost o cualquier otra IP): SOLO intentar ESP32 externo
+      // En PC: SOLO intentar ESP32 externo
       console.log('🖥️ [PC] Modo PC detectado, intentando ESP32 externo...');
       try {
         const response = await fetch(`${this.esp32IP}/flags`, {
@@ -80,9 +105,8 @@ class ESP32Service {
   async resetFlags() {
     console.log('🔄 HardwareService: Iniciando reset de flags...');
     
-    // Detectar plataforma basándose en la URL del navegador
-    // Solo considerar Pi si estamos accediendo desde la IP específica de Pi
-    const isPi = window.location.hostname.includes('192.168.0.237');
+    // Detectar plataforma dinámicamente preguntando al servidor
+    const isPi = await this.detectPlatform();
     
     if (isPi) {
       // En Pi: resetear en servidor local
