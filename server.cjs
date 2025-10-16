@@ -8,6 +8,117 @@ const { exec } = require('child_process');
 const app = express();
 const upload = multer({ dest: path.join(__dirname, 'public/videos/tmp') });
 
+// Detectar si estamos en Raspberry Pi
+const isRaspberryPi = () => {
+  try {
+    return fs.existsSync('/proc/device-tree/model') && 
+           fs.readFileSync('/proc/device-tree/model', 'utf8').includes('Raspberry Pi');
+  } catch {
+    return false;
+  }
+};
+
+const platform = isRaspberryPi() ? 'pi' : 'pc';
+console.log(`🚀 Servidor iniciando en modo: ${platform.toUpperCase()}`);
+
+// Sistema de flags para Pi (solo en modo Pi)
+let internalFlags = {
+  punto1: false,
+  punto2: false,
+  restarPunto1: false,
+  restarPunto2: false,
+  cambioSaque: false,
+  cambioCancha: false
+};
+
+// Middleware para parsear JSON
+app.use(express.json());
+
+// ===============================
+// ENDPOINTS PARA ESP32 HARDWARE
+// ===============================
+
+// Endpoint para que ESP32s lean las flags (compatible con ESP32 original)
+app.get('/flags', (req, res) => {
+  if (platform === 'pi') {
+    res.json(internalFlags);
+  } else {
+    // En PC, devolver flags vacías (no hay ESP32 interno)
+    res.json({
+      punto1: false,
+      punto2: false,
+      restarPunto1: false,
+      restarPunto2: false,
+      cambioSaque: false,
+      cambioCancha: false
+    });
+  }
+});
+
+// Endpoint para que ESP32s reseteén las flags
+app.post('/resetFlags', (req, res) => {
+  if (platform === 'pi') {
+    Object.keys(internalFlags).forEach(key => {
+      internalFlags[key] = false;
+    });
+    console.log('🔄 Flags internas reseteadas');
+  }
+  res.send('OK');
+});
+
+// Endpoints para que ESP32s externos activen flags (botoneras inalámbricas)
+app.post('/api/punto1', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.punto1 = true;
+    console.log('🔥 ESP32 activó: punto1');
+  }
+  res.send('OK');
+});
+
+app.post('/api/punto2', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.punto2 = true;
+    console.log('🔥 ESP32 activó: punto2');
+  }
+  res.send('OK');
+});
+
+app.post('/api/restarPunto1', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.restarPunto1 = true;
+    console.log('🔥 ESP32 activó: restarPunto1');
+  }
+  res.send('OK');
+});
+
+app.post('/api/restarPunto2', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.restarPunto2 = true;
+    console.log('🔥 ESP32 activó: restarPunto2');
+  }
+  res.send('OK');
+});
+
+app.post('/api/cambioSaque', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.cambioSaque = true;
+    console.log('🔥 ESP32 activó: cambioSaque');
+  }
+  res.send('OK');
+});
+
+app.post('/api/cambioCancha', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.cambioCancha = true;
+    console.log('🔥 ESP32 activó: cambioCancha');
+  }
+  res.send('OK');
+});
+
+// ===============================
+// ENDPOINTS PARA JUGADORES Y VIDEOS
+// ===============================
+
 // Endpoint para obtener la lista de jugadores
 app.get('/api/jugadores', (req, res) => {
   const jsonPath = path.join(__dirname, 'src/data/jugadores.json');

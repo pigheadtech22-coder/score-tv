@@ -9,7 +9,23 @@ const PadelBall = () => (
 	</svg>
 );
 
-export default function Marcador({ player1, player2, score1, score2, set, server, jugadores, sets = [ [0,0,0], [0,0,0] ], game = [0,0], matchTime = '00:32:25', goldenPoint = true, setMax = 6, tieBreakMode = false, tieBreakScore1 = 0, tieBreakScore2 = 0, torneo = 'CIRCUITO APJ ETAPA 18 PWC', fase = 'FINAL 1ERA' }) {
+export default function Marcador({ 
+  player1, 
+  player2, 
+  score1, 
+  score2, 
+  set, 
+  server, 
+  jugadores, 
+  sets = [ [0,0,0], [0,0,0] ], 
+  matchTime = '00:32:25', 
+  goldenPoint = true, 
+  tieBreakMode = false, 
+  tieBreakScore1 = 0, 
+  tieBreakScore2 = 0,
+  torneo = "TORNEO PÁDEL",
+  fase = "SEMIFINAL"
+}) {
 		const pareja1 = Array.isArray(player1) ? player1 : [player1];
 		const pareja2 = Array.isArray(player2) ? player2 : [player2];
 		const jugadores1 = pareja1.map(nombre => jugadores.find(j => j.nombre === nombre));

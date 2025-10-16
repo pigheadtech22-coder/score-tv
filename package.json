@@ -4,16 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "node server.cjs",
+    "start": "npm run start:auto",
+    "start:auto": "node -e \"console.log('🔍 Detectando plataforma...'); const fs = require('fs'); const isPi = fs.existsSync('/proc/device-tree/model'); console.log(isPi ? '🥧 Raspberry Pi detectada' : '💻 PC detectada'); process.exit(0);\" && npm run start:all",
+    "start:pc": "cross-env PLATFORM=pc npm run start:all",
+    "start:pi": "cross-env PLATFORM=pi npm run start:all",
+    "start:pi-production": "cross-env NODE_ENV=production PLATFORM=pi npm run start:production",
     "dev": "vite",
     "build": "vite build",
+    "build:pi": "cross-env PLATFORM=pi npm run build",
     "lint": "eslint .",
     "preview": "vite preview",
     "start:all": "concurrently \"npm run dev -- --host\" \"node remote-control-server.cjs\" \"node server.cjs\"",
-    "start:production": "concurrently \"node server-production.cjs\" \"node remote-control-server.cjs\""
+    "start:production": "concurrently \"node server-production.cjs\" \"node remote-control-server.cjs\"",
+    "install:pi": "chmod +x install-pi.sh && ./install-pi.sh",
+    "setup:pi-network": "node setup-pi-network.js"
   },
   "dependencies": {
     "@babel/code-frame": "^7.27.1",
+    "cross-env": "^10.1.0",
     "express": "^5.1.0",
     "fluent-ffmpeg": "^2.1.3",
     "multer": "^2.0.2",

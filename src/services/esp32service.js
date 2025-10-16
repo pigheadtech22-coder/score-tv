@@ -1,35 +1,36 @@
 // src/services/esp32Service.js
-// Dirección IP del ESP32
-const ESP32_IP = 'http://192.168.0.101'; // Cambia por la IP real
+import { createHardwareService } from './HardwareService.js';
+
+// Crear el servicio de hardware apropiado
+const hardwareService = createHardwareService();
 
 export async function getMarcador() {
-  const res = await fetch("http://192.168.0.101/marcador"); // o IP de tu ESP32
+  // Esta función puede mantenerse para compatibilidad, pero probablemente no se use
+  const res = await fetch("http://192.168.0.101/marcador");
   return res.json();
 }
 
-// Polling para leer banderas del ESP32
+// Polling para leer banderas del hardware
 export async function getFlags() {
-  try {
-    const response = await fetch(`${ESP32_IP}/flags`, {
-      cache: "no-store",
-      mode: "cors",
-      credentials: "same-origin"
-    });
-    if (!response.ok) throw new Error("Error en la respuesta del ESP32");
-    return await response.json();
-  } catch (error) {
-    console.warn("No se pudo conectar al ESP32, pero seguimos en LAN", error);
-    return null;
-  }
+  return await hardwareService.getFlags();
 }
 
-// Resetear banderas en el ESP32
+// Resetear banderas en el hardware
 export async function resetFlags() {
-  console.log('[FRONT] Ejecutando fetch a /resetFlags');
-  await fetch(`${ESP32_IP}/resetFlags`, { method: 'POST' });
+  console.log('[FRONT] Ejecutando resetFlags');
+  await hardwareService.resetFlags();
 }
 
-// Si quieres activar banderas desde React (no necesario si solo usas la web del ESP32)
+// Exponer el servicio para uso directo si es necesario
+export { hardwareService };
+
+// Función para activar flags (usará el servicio interno en Pi)
 export async function setFlag(flagName) {
-  await fetch(`${ESP32_IP}/setFlag?${flagName}=true`, { method: 'POST' });
+  if (hardwareService.activateFlag) {
+    // Pi interna - activar flag directamente
+    hardwareService.activateFlag(flagName);
+  } else {
+    // ESP32 externo - enviar HTTP request (para compatibilidad futura)
+    console.warn('setFlag no implementado para ESP32 externo');
+  }
 }

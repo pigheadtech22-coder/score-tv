@@ -1,0 +1,15 @@
+# Archivos del servidor Node.js (no son para browser)
+*.cjs
+remote-control-server.js
+sync-videos-json.js
+
+# Archivos de configuración específicos del servidor
+src/config/server-config.js
+
+# Scripts de instalación
+*.sh
+
+# Archivos temporales
+public/videos/tmp/
+node_modules/
+dist/

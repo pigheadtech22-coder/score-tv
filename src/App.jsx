@@ -196,6 +196,7 @@ console.log('Importando resetFlags desde esp32service');
 import { getFlags, resetFlags } from './services/esp32service';
 import Publicidad from './components/Publicidad';
 import PanelControl from './components/PanelControl';
+import RolCanchas from './components/RolCanchas';
 import jugadoresData from './data/jugadores.json';
 import './Marcador.css';
 
@@ -236,8 +237,8 @@ function App() {
     window.addEventListener('jugadoresMarcadorChanged', updatePlayers);
     return () => window.removeEventListener('jugadoresMarcadorChanged', updatePlayers);
   }, []);
-  const [logoAnimCycle, setLogoAnimCycle] = useState(0);
-    const [videosPublicidad, setVideosPublicidad] = useState([]);
+
+  const [videosPublicidad, setVideosPublicidad] = useState([]);
 
   // Cargar videos.json en videosPublicidad al montar y cuando cambie
   useEffect(() => {
@@ -305,7 +306,7 @@ function App() {
       }
     }
     return () => clearInterval(timer);
-  }, [matchTimeActive, matchStartTime, matchSeconds]);
+  }, [matchTimeActive, matchStartTime, matchSeconds, matchPausedTime]);
 
   // Formatear segundos a HH:MM:SS
     function formatMatchTime(secs) {
@@ -548,9 +549,11 @@ function App() {
         >
           <Link to="/" style={{padding:'8px 24px',fontWeight:'bold',color:'#222',textDecoration:'none'}}>Marcador</Link>
           <Link to="/panel-control" style={{padding:'8px 24px',fontWeight:'bold',color:'#222',textDecoration:'none'}}>Configuración</Link>
+          <Link to="/rol-canchas" style={{padding:'8px 24px',fontWeight:'bold',color:'#222',textDecoration:'none'}}>Rol de Canchas</Link>
         </nav>
           <Routes>
             <Route path="/panel-control" element={<PanelControl />} />
+            <Route path="/rol-canchas" element={<RolCanchas />} />
             <Route path="/" element={
               <div className="app">
                 {/* ...existing code... */}
@@ -647,7 +650,7 @@ function App() {
                       matchTime={formatMatchTime(matchSeconds)}
                     />
                     {/* Logo animado sobre el marcador durante cambio de cancha */}
-                    {modo === 'cambioCancha' && logoAnimCycle === 0 && (
+                    {modo === 'cambioCancha' && (
                       <LogoAnimado onAnimationStart={handleLogoAnimStart} onAnimationEnd={handleLogoAnimEnd} />
                     )}
                   </>

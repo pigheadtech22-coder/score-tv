@@ -1,0 +1,706 @@
+{
+  "fecha": "2025-10-11",
+  "torneo": "Torneo de Padel - Octubre 2025",
+  "horarios": [
+    {
+      "horario": "09:00",
+      "canchas": [
+        {
+          "id": 1,
+          "numero": "Cancha 1",
+          "fase": "Grupo A",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Carlos Mendez",
+              "jugador2": "Luis Rodriguez"
+            },
+            "equipoB": {
+              "jugador1": "Pedro Garcia",
+              "jugador2": "Juan Martinez"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 2,
+          "numero": "Cancha 2",
+          "fase": "Grupo B",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Miguel Torres",
+              "jugador2": "Roberto Silva"
+            },
+            "equipoB": {
+              "jugador1": "Fernando Lopez",
+              "jugador2": "Andres Vargas"
+            }
+          },
+          "estado": "en_juego"
+        },
+        {
+          "id": 3,
+          "numero": "Cancha 3",
+          "fase": "Grupo C",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Ricardo Morales",
+              "jugador2": "Diego Fernandez"
+            },
+            "equipoB": {
+              "jugador1": "Sergio Castillo",
+              "jugador2": "Javier Ruiz"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 4,
+          "numero": "Cancha 4",
+          "fase": "Grupo D",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Alberto Jimenez",
+              "jugador2": "Daniel Castro"
+            },
+            "equipoB": {
+              "jugador1": "Manuel Herrera",
+              "jugador2": "Oscar Delgado"
+            }
+          },
+          "estado": "finalizado"
+        },
+        {
+          "id": 5,
+          "numero": "Cancha 5",
+          "fase": "Grupo E",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Gabriel Vega",
+              "jugador2": "Adrian Ortiz"
+            },
+            "equipoB": {
+              "jugador1": "Cristian Paz",
+              "jugador2": "Santiago Rojas"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 6,
+          "numero": "Cancha 6",
+          "fase": "Grupo F",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Emilio Santos",
+              "jugador2": "Francisco Guzman"
+            },
+            "equipoB": {
+              "jugador1": "Alejandro Cruz",
+              "jugador2": "Nicolas Ramos"
+            }
+          },
+          "estado": "en_juego"
+        },
+        {
+          "id": 7,
+          "numero": "Cancha 7",
+          "fase": "Grupo G",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Mateo Guerrero",
+              "jugador2": "Sebastian Aguilar"
+            },
+            "equipoB": {
+              "jugador1": "Felipe Medina",
+              "jugador2": "Ignacio Cordova"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 8,
+          "numero": "Cancha 8",
+          "fase": "Grupo H",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Rodrigo Navarro",
+              "jugador2": "Esteban Molina"
+            },
+            "equipoB": {
+              "jugador1": "Maximiliano Soto",
+              "jugador2": "Benjamin Paredes"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 9,
+          "numero": "Cancha 9",
+          "fase": "Grupo I",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Leonardo Campos",
+              "jugador2": "Joaquin Fuentes"
+            },
+            "equipoB": {
+              "jugador1": "Valentino Espinoza",
+              "jugador2": "Thomás Contreras"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 10,
+          "numero": "Cancha 10",
+          "fase": "Grupo J",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Lorenzo Moreno",
+              "jugador2": "Agustín Rivera"
+            },
+            "equipoB": {
+              "jugador1": "Matías Peña",
+              "jugador2": "Bruno Carrasco"
+            }
+          },
+          "estado": "programado"
+        }
+      ]
+    },
+    {
+      "horario": "10:30",
+      "canchas": [
+        {
+          "id": 11,
+          "numero": "Cancha 1",
+          "fase": "Cuartos de Final",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Ricardo Morales",
+              "jugador2": "Diego Fernandez"
+            },
+            "equipoB": {
+              "jugador1": "Gabriel Vega",
+              "jugador2": "Adrian Ortiz"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 12,
+          "numero": "Cancha 2",
+          "fase": "Cuartos de Final",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Miguel Torres",
+              "jugador2": "Roberto Silva"
+            },
+            "equipoB": {
+              "jugador1": "Leonardo Campos",
+              "jugador2": "Joaquin Fuentes"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 13,
+          "numero": "Cancha 3",
+          "fase": "Grupo A",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Antonio Silva",
+              "jugador2": "Eduardo Martinez"
+            },
+            "equipoB": {
+              "jugador1": "Raul Gonzalez",
+              "jugador2": "Jorge Ramirez"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 14,
+          "numero": "Cancha 4",
+          "fase": "Grupo B",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Hector Diaz",
+              "jugador2": "Ivan Torres"
+            },
+            "equipoB": {
+              "jugador1": "Pablo Moreno",
+              "jugador2": "Victor Herrera"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 15,
+          "numero": "Cancha 5",
+          "fase": "Grupo C",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Marco Gutierrez",
+              "jugador2": "Cesar Vargas"
+            },
+            "equipoB": {
+              "jugador1": "Julian Castro",
+              "jugador2": "Simon Rojas"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 16,
+          "numero": "Cancha 6",
+          "fase": "Grupo D",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Damian Flores",
+              "jugador2": "Axel Mendoza"
+            },
+            "equipoB": {
+              "jugador1": "Bruno Aguilar",
+              "jugador2": "Emiliano Cruz"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 17,
+          "numero": "Cancha 7",
+          "fase": "Grupo E",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Fabian Lopez",
+              "jugador2": "Gonzalo Soto"
+            },
+            "equipoB": {
+              "jugador1": "Luciano Peña",
+              "jugador2": "Thiago Rivera"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 18,
+          "numero": "Cancha 8",
+          "fase": "Grupo F",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Nico Espinoza",
+              "jugador2": "Aaron Campos"
+            },
+            "equipoB": {
+              "jugador1": "Dylan Navarro",
+              "jugador2": "Gael Molina"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 19,
+          "numero": "Cancha 9",
+          "fase": "Grupo G",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Ian Guerrero",
+              "jugador2": "Kevin Medina"
+            },
+            "equipoB": {
+              "jugador1": "Liam Cordova",
+              "jugador2": "Noah Santos"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 20,
+          "numero": "Cancha 10",
+          "fase": "Grupo H",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Oliver Guzman",
+              "jugador2": "Samuel Delgado"
+            },
+            "equipoB": {
+              "jugador1": "Ethan Herrera",
+              "jugador2": "Mason Jimenez"
+            }
+          },
+          "estado": "programado"
+        }
+      ]
+    },
+    {
+      "horario": "12:00",
+      "canchas": [
+        {
+          "id": 21,
+          "numero": "Cancha 1",
+          "fase": "Semifinal",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Ricardo Morales",
+              "jugador2": "Diego Fernandez"
+            },
+            "equipoB": {
+              "jugador1": "Damian Flores",
+              "jugador2": "Axel Mendoza"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 22,
+          "numero": "Cancha 2",
+          "fase": "Semifinal",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Miguel Torres",
+              "jugador2": "Roberto Silva"
+            },
+            "equipoB": {
+              "jugador1": "Marco Gutierrez",
+              "jugador2": "Cesar Vargas"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 23,
+          "numero": "Cancha 3",
+          "fase": "Grupo A",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Lucas Fernandez",
+              "jugador2": "Matias Gonzalez"
+            },
+            "equipoB": {
+              "jugador1": "Santiago Lopez",
+              "jugador2": "Benjamin Torres"
+            }
+          },
+          "estado": "en_juego"
+        },
+        {
+          "id": 24,
+          "numero": "Cancha 4",
+          "fase": "Grupo B",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Joaquin Castro",
+              "jugador2": "Agustin Silva"
+            },
+            "equipoB": {
+              "jugador1": "Tomas Vargas",
+              "jugador2": "Nicolas Rojas"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 25,
+          "numero": "Cancha 5",
+          "fase": "Grupo C",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Franco Mendez",
+              "jugador2": "Diego Santos"
+            },
+            "equipoB": {
+              "jugador1": "Martin Cruz",
+              "jugador2": "Ignacio Peña"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 26,
+          "numero": "Cancha 6",
+          "fase": "Grupo D",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Emilio Herrera",
+              "jugador2": "Rafael Moreno"
+            },
+            "equipoB": {
+              "jugador1": "Alejandro Diaz",
+              "jugador2": "Cristobal Rivera"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 27,
+          "numero": "Cancha 7",
+          "fase": "Grupo E",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Felipe Guerrero",
+              "jugador2": "Maximiliano Aguilar"
+            },
+            "equipoB": {
+              "jugador1": "Valentino Cordova",
+              "jugador2": "Thiago Medina"
+            }
+          },
+          "estado": "finalizado"
+        },
+        {
+          "id": 28,
+          "numero": "Cancha 8",
+          "fase": "Grupo F",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Sebastian Espinoza",
+              "jugador2": "Leonardo Campos"
+            },
+            "equipoB": {
+              "jugador1": "Joaquin Fuentes",
+              "jugador2": "Valentino Contreras"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 29,
+          "numero": "Cancha 9",
+          "fase": "Grupo G",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Lorenzo Navarro",
+              "jugador2": "Agustin Molina"
+            },
+            "equipoB": {
+              "jugador1": "Bruno Soto",
+              "jugador2": "Matias Paredes"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 30,
+          "numero": "Cancha 10",
+          "fase": "Grupo H",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Gael Guzman",
+              "jugador2": "Ian Delgado"
+            },
+            "equipoB": {
+              "jugador1": "Kevin Herrera",
+              "jugador2": "Liam Jimenez"
+            }
+          },
+          "estado": "programado"
+        }
+      ]
+    },
+    {
+      "horario": "13:30",
+      "canchas": [
+        {
+          "id": 31,
+          "numero": "Cancha 1",
+          "fase": "Final",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Ricardo Morales",
+              "jugador2": "Diego Fernandez"
+            },
+            "equipoB": {
+              "jugador1": "Miguel Torres",
+              "jugador2": "Roberto Silva"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 32,
+          "numero": "Cancha 2",
+          "fase": "Final",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Marco Gutierrez",
+              "jugador2": "Cesar Vargas"
+            },
+            "equipoB": {
+              "jugador1": "Sebastian Espinoza",
+              "jugador2": "Leonardo Campos"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 33,
+          "numero": "Cancha 3",
+          "fase": "Grupo A",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Noah Santos",
+              "jugador2": "Oliver Guzman"
+            },
+            "equipoB": {
+              "jugador1": "Samuel Delgado",
+              "jugador2": "Ethan Herrera"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 34,
+          "numero": "Cancha 4",
+          "fase": "Grupo B",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Mason Jimenez",
+              "jugador2": "Aaron Campos"
+            },
+            "equipoB": {
+              "jugador1": "Dylan Navarro",
+              "jugador2": "Gael Molina"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 35,
+          "numero": "Cancha 5",
+          "fase": "Grupo C",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Ian Guerrero",
+              "jugador2": "Kevin Medina"
+            },
+            "equipoB": {
+              "jugador1": "Liam Cordova",
+              "jugador2": "Oliver Santos"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 36,
+          "numero": "Cancha 6",
+          "fase": "Grupo D",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Samuel Guzman",
+              "jugador2": "Ethan Delgado"
+            },
+            "equipoB": {
+              "jugador1": "Mason Herrera",
+              "jugador2": "Aaron Jimenez"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 37,
+          "numero": "Cancha 7",
+          "fase": "Grupo E",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Dylan Campos",
+              "jugador2": "Gael Navarro"
+            },
+            "equipoB": {
+              "jugador1": "Ian Molina",
+              "jugador2": "Kevin Soto"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 38,
+          "numero": "Cancha 8",
+          "fase": "Grupo F",
+          "categoria": "5ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Liam Paredes",
+              "jugador2": "Noah Guerrero"
+            },
+            "equipoB": {
+              "jugador1": "Oliver Medina",
+              "jugador2": "Samuel Cordova"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 39,
+          "numero": "Cancha 9",
+          "fase": "Grupo G",
+          "categoria": "4ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Ethan Santos",
+              "jugador2": "Mason Guzman"
+            },
+            "equipoB": {
+              "jugador1": "Aaron Delgado",
+              "jugador2": "Dylan Herrera"
+            }
+          },
+          "estado": "programado"
+        },
+        {
+          "id": 40,
+          "numero": "Cancha 10",
+          "fase": "Grupo H",
+          "categoria": "6ta",
+          "jugadores": {
+            "equipoA": {
+              "jugador1": "Gael Jimenez",
+              "jugador2": "Ian Campos"
+            },
+            "equipoB": {
+              "jugador1": "Kevin Navarro",
+              "jugador2": "Liam Molina"
+            }
+          },
+          "estado": "programado"
+        }
+      ]
+    }
+  ]
+}
