@@ -19,7 +19,8 @@ class ESP32Service {
 
   async getFlags() {
     // Detectar plataforma basándose en la URL del navegador
-    const isPi = window.location.hostname.includes('192.168.0.237') || window.location.hostname === 'localhost';
+    // Solo considerar Pi si estamos accediendo desde la IP específica de Pi
+    const isPi = window.location.hostname.includes('192.168.0.237');
     
     if (isPi) {
       // En Pi: primero intentar servidor local (Pi interna)
@@ -37,7 +38,8 @@ class ESP32Service {
         console.log('⚠️ [PI] Servidor local no disponible, intentando ESP32 externo...');
       }
     } else {
-      // En PC: primero intentar ESP32 externo, luego servidor local (para panel web)
+      // En PC (localhost o cualquier otra IP): SOLO intentar ESP32 externo
+      console.log('🖥️ [PC] Modo PC detectado, intentando ESP32 externo...');
       try {
         const response = await fetch(`${this.esp32IP}/flags`, {
           cache: "no-store",
@@ -50,24 +52,26 @@ class ESP32Service {
           return flags;
         }
       } catch {
-        console.log('⚠️ [PC] ESP32 externo no disponible, intentando servidor local...');
+        console.log('⚠️ [PC] ESP32 externo no disponible, esperando reconexión...');
+        return null; // En PC, no hacer fallback, solo esperar
       }
     }
 
-    // Fallback: intentar la otra opción
-    const fallbackURL = isPi ? `${this.esp32IP}/flags` : `${this.localServerURL}/api/flags`;
-    try {
-      const response = await fetch(fallbackURL, {
-        cache: "no-store",
-        mode: "cors"
-      });
-      if (response.ok) {
-        const flags = await response.json();
-        console.log('📡 [FALLBACK] Flags obtenidas de:', fallbackURL, flags);
-        return flags;
+    // Fallback: solo para Pi (intentar ESP32 externo si servidor local falla)
+    if (isPi) {
+      try {
+        const response = await fetch(`${this.esp32IP}/flags`, {
+          cache: "no-store",
+          mode: "cors"
+        });
+        if (response.ok) {
+          const flags = await response.json();
+          console.log('📡 [PI-FALLBACK] Flags obtenidas del ESP32 externo:', flags);
+          return flags;
+        }
+      } catch {
+        console.warn("❌ [PI] No se pudo conectar a ningún servicio de flags");
       }
-    } catch {
-      console.warn("No se pudo conectar a ningún servicio de flags");
     }
 
     return null;
@@ -77,7 +81,8 @@ class ESP32Service {
     console.log('🔄 HardwareService: Iniciando reset de flags...');
     
     // Detectar plataforma basándose en la URL del navegador
-    const isPi = window.location.hostname.includes('192.168.0.237') || window.location.hostname === 'localhost';
+    // Solo considerar Pi si estamos accediendo desde la IP específica de Pi
+    const isPi = window.location.hostname.includes('192.168.0.237');
     
     if (isPi) {
       // En Pi: resetear en servidor local
@@ -95,25 +100,27 @@ class ESP32Service {
         console.log('⚠️ [PI] Error reseteando en servidor local:', error.message);
       }
     } else {
-      // En PC: resetear en ESP32 externo primero
+      // En PC (localhost o cualquier otra IP): SOLO resetear en ESP32 externo
       try {
-        console.log('🔄 [PC] Intentando reset en ESP32 externo...');
+        console.log('🔄 [PC] Modo PC detectado, intentando reset en ESP32 externo...');
         await fetch(`${this.esp32IP}/resetFlags`, { method: 'POST' });
         console.log('✅ [PC] Flags reseteadas en ESP32 externo');
         return;
       } catch {
-        console.log('⚠️ [PC] ESP32 externo no disponible, intentando servidor local...');
+        console.log('⚠️ [PC] ESP32 externo no disponible, esperando reconexión...');
+        return; // En PC, no hacer fallback, solo esperar
       }
     }
 
-    // Fallback: intentar la otra opción
-    const fallbackURL = isPi ? `${this.esp32IP}/resetFlags` : `${this.localServerURL}/resetFlags`;
-    try {
-      console.log('🔄 [FALLBACK] Intentando reset en:', fallbackURL);
-      await fetch(fallbackURL, { method: 'POST' });
-      console.log('✅ [FALLBACK] Flags reseteadas');
-    } catch {
-      console.warn("❌ No se pudo resetear flags en ningún servicio");
+    // Fallback: solo para Pi (intentar ESP32 externo si servidor local falla)
+    if (isPi) {
+      try {
+        console.log('🔄 [PI-FALLBACK] Intentando reset en ESP32 externo...');
+        await fetch(`${this.esp32IP}/resetFlags`, { method: 'POST' });
+        console.log('✅ [PI-FALLBACK] Flags reseteadas en ESP32 externo');
+      } catch {
+        console.warn("❌ [PI] No se pudo resetear flags en ningún servicio");
+      }
     }
   }
 }

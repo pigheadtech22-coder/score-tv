@@ -89,81 +89,65 @@ app.post('/resetFlags', (req, res) => {
 
 // Punto para jugador 1 (compatible con ESP32 externo y panel web)
 app.post('/api/punto1', (req, res) => {
-  if (platform === 'pi') {
-    // En Pi: activar flag interna para ESP32/panel web
-    internalFlags.punto1 = true;
-    console.log('🏓 API: Punto para jugador 1 (Pi - flag interna)');
-  } else {
-    // En PC: no activar flags internas (ESP32 externo maneja sus propias flags)
-    console.log('🏓 API: Punto para jugador 1 (PC - comando recibido, no flag interna)');
-  }
+  // Activar flag interna en cualquier plataforma para servir como respaldo
+  internalFlags.punto1 = true;
+  console.log(`🏓 API: Punto para jugador 1 (${platform.toUpperCase()} - flag interna activada)`);
   res.json({ success: true, action: 'punto1', platform });
 });
 
 // Punto para jugador 2 (compatible con ESP32 externo y panel web)
 app.post('/api/punto2', (req, res) => {
-  if (platform === 'pi') {
-    // En Pi: activar flag interna
-    internalFlags.punto2 = true;
-    console.log('🏓 API: Punto para jugador 2 (Pi - flag interna)');
-  } else {
-    // En PC: no activar flags internas
-    console.log('🏓 API: Punto para jugador 2 (PC - comando recibido, no flag interna)');
-  }
+  // Activar flag interna en cualquier plataforma para servir como respaldo
+  internalFlags.punto2 = true;
+  console.log(`🏓 API: Punto para jugador 2 (${platform.toUpperCase()} - flag interna activada)`);
   res.json({ success: true, action: 'punto2', platform });
 });
 
 // Restar punto jugador 1
 app.post('/api/restarPunto1', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.restarPunto1 = true;
-    console.log('🏓 API: Restar punto jugador 1');
-  }
+  // Activar flag interna en cualquier plataforma
+  internalFlags.restarPunto1 = true;
+  console.log(`🏓 API: Restar punto jugador 1 (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'restarPunto1', platform });
 });
 
 // Alias para panel web
 app.post('/api/restar1', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.restarPunto1 = true;
-    console.log('🏓 API: Restar punto jugador 1');
-  }
+  // Activar flag interna en cualquier plataforma
+  internalFlags.restarPunto1 = true;
+  console.log(`🏓 API: Restar punto jugador 1 (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'restar1', platform });
 });
 
 // Restar punto jugador 2
 app.post('/api/restarPunto2', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.restarPunto2 = true;
-    console.log('🏓 API: Restar punto jugador 2');
-  }
+  // Activar flag interna en cualquier plataforma
+  internalFlags.restarPunto2 = true;
+  console.log(`🏓 API: Restar punto jugador 2 (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'restarPunto2', platform });
 });
 
 // Alias para panel web
 app.post('/api/restar2', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.restarPunto2 = true;
-    console.log('🏓 API: Restar punto jugador 2');
-  }
+  // Activar flag interna en cualquier plataforma
+  internalFlags.restarPunto2 = true;
+  console.log(`🏓 API: Restar punto jugador 2 (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'restar2', platform });
 });
 
 // Cambio de saque
 app.post('/api/cambioSaque', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.cambioSaque = true;
-    console.log('🏓 API: Cambio de saque');
-  }
+  // Activar flag interna en cualquier plataforma
+  internalFlags.cambioSaque = true;
+  console.log(`🏓 API: Cambio de saque (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'cambioSaque', platform });
 });
 
 // Cambio de cancha
 app.post('/api/cambioCancha', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.cambioCancha = true;
-    console.log('🏓 API: Cambio de cancha');
-  }
+  // Activar flag interna en cualquier plataforma
+  internalFlags.cambioCancha = true;
+  console.log(`🏓 API: Cambio de cancha (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'cambioCancha', platform });
 });
 
@@ -327,33 +311,27 @@ app.get('/videos/:videoName', (req, res) => {
 
 // Reset juego
 app.post('/api/reset', (req, res) => {
-  if (platform === 'pi') {
-    // Resetear todas las flags
-    Object.keys(internalFlags).forEach(key => {
-      internalFlags[key] = false;
-    });
-    console.log('🏓 API: Reset del juego');
-  }
+  // Resetear todas las flags en cualquier plataforma
+  Object.keys(internalFlags).forEach(key => {
+    internalFlags[key] = false;
+  });
+  console.log(`🏓 API: Reset del juego (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'reset', platform });
 });
 
-// Obtener estado actual de las flags (para Pi)
+// Obtener estado actual de las flags
 app.get('/api/flags', (req, res) => {
-  if (platform === 'pi') {
-    res.json(internalFlags);
-  } else {
-    res.json({ message: 'Solo disponible en modo Pi', platform });
-  }
+  // Devolver flags en cualquier plataforma (Pi las usa como principal, PC como respaldo)
+  res.json(internalFlags);
 });
 
 // Limpiar flags (para Pi)
 app.post('/api/clear-flags', (req, res) => {
-  if (platform === 'pi') {
-    Object.keys(internalFlags).forEach(key => {
-      internalFlags[key] = false;
-    });
-    console.log('🧹 API: Flags limpiadas');
-  }
+  // Limpiar flags en cualquier plataforma
+  Object.keys(internalFlags).forEach(key => {
+    internalFlags[key] = false;
+  });
+  console.log(`🧹 API: Flags limpiadas (${platform.toUpperCase()})`);
   res.json({ success: true, action: 'clear-flags', platform });
 });
 
