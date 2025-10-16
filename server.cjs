@@ -66,53 +66,78 @@ app.post('/resetFlags', (req, res) => {
   res.send('OK');
 });
 
-// Endpoints para que ESP32s externos activen flags (botoneras inalámbricas)
+// ====== RUTAS API PARA CONTROL REMOTO WEB Y ESP32 ======
+
+// Punto para jugador 1 (compatible con ESP32 externo y panel web)
 app.post('/api/punto1', (req, res) => {
   if (platform === 'pi') {
     internalFlags.punto1 = true;
-    console.log('🔥 ESP32 activó: punto1');
+    console.log('🏓 API: Punto para jugador 1');
   }
-  res.send('OK');
+  res.json({ success: true, action: 'punto1', platform });
 });
 
+// Punto para jugador 2 (compatible con ESP32 externo y panel web)
 app.post('/api/punto2', (req, res) => {
   if (platform === 'pi') {
     internalFlags.punto2 = true;
-    console.log('🔥 ESP32 activó: punto2');
+    console.log('🏓 API: Punto para jugador 2');
   }
-  res.send('OK');
+  res.json({ success: true, action: 'punto2', platform });
 });
 
+// Restar punto jugador 1
 app.post('/api/restarPunto1', (req, res) => {
   if (platform === 'pi') {
     internalFlags.restarPunto1 = true;
-    console.log('🔥 ESP32 activó: restarPunto1');
+    console.log('🏓 API: Restar punto jugador 1');
   }
-  res.send('OK');
+  res.json({ success: true, action: 'restarPunto1', platform });
 });
 
+// Alias para panel web
+app.post('/api/restar1', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.restarPunto1 = true;
+    console.log('🏓 API: Restar punto jugador 1');
+  }
+  res.json({ success: true, action: 'restar1', platform });
+});
+
+// Restar punto jugador 2
 app.post('/api/restarPunto2', (req, res) => {
   if (platform === 'pi') {
     internalFlags.restarPunto2 = true;
-    console.log('🔥 ESP32 activó: restarPunto2');
+    console.log('🏓 API: Restar punto jugador 2');
   }
-  res.send('OK');
+  res.json({ success: true, action: 'restarPunto2', platform });
 });
 
+// Alias para panel web
+app.post('/api/restar2', (req, res) => {
+  if (platform === 'pi') {
+    internalFlags.restarPunto2 = true;
+    console.log('🏓 API: Restar punto jugador 2');
+  }
+  res.json({ success: true, action: 'restar2', platform });
+});
+
+// Cambio de saque
 app.post('/api/cambioSaque', (req, res) => {
   if (platform === 'pi') {
     internalFlags.cambioSaque = true;
-    console.log('🔥 ESP32 activó: cambioSaque');
+    console.log('🏓 API: Cambio de saque');
   }
-  res.send('OK');
+  res.json({ success: true, action: 'cambioSaque', platform });
 });
 
+// Cambio de cancha
 app.post('/api/cambioCancha', (req, res) => {
   if (platform === 'pi') {
     internalFlags.cambioCancha = true;
-    console.log('🔥 ESP32 activó: cambioCancha');
+    console.log('🏓 API: Cambio de cancha');
   }
-  res.send('OK');
+  res.json({ success: true, action: 'cambioCancha', platform });
 });
 
 // ===============================
@@ -271,62 +296,6 @@ app.get('/videos/:videoName', (req, res) => {
   }
   res.setHeader('Content-Type', 'video/mp4');
   res.sendFile(videoPath);
-});
-
-// ====== RUTAS API PARA CONTROL REMOTO WEB ======
-
-// Punto para jugador 1
-app.post('/api/punto1', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.punto1 = true;
-    console.log('🏓 API: Punto para jugador 1');
-  }
-  res.json({ success: true, action: 'punto1', platform });
-});
-
-// Punto para jugador 2
-app.post('/api/punto2', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.punto2 = true;
-    console.log('🏓 API: Punto para jugador 2');
-  }
-  res.json({ success: true, action: 'punto2', platform });
-});
-
-// Restar punto jugador 1
-app.post('/api/restar1', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.restarPunto1 = true;
-    console.log('🏓 API: Restar punto jugador 1');
-  }
-  res.json({ success: true, action: 'restar1', platform });
-});
-
-// Restar punto jugador 2
-app.post('/api/restar2', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.restarPunto2 = true;
-    console.log('🏓 API: Restar punto jugador 2');
-  }
-  res.json({ success: true, action: 'restar2', platform });
-});
-
-// Cambio de saque
-app.post('/api/cambioSaque', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.cambioSaque = true;
-    console.log('🏓 API: Cambio de saque');
-  }
-  res.json({ success: true, action: 'cambioSaque', platform });
-});
-
-// Cambio de cancha
-app.post('/api/cambioCancha', (req, res) => {
-  if (platform === 'pi') {
-    internalFlags.cambioCancha = true;
-    console.log('🏓 API: Cambio de cancha');
-  }
-  res.json({ success: true, action: 'cambioCancha', platform });
 });
 
 // Reset juego
