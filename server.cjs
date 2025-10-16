@@ -34,6 +34,20 @@ let internalFlags = {
 // Middleware para parsear JSON
 app.use(express.json());
 
+// Middleware para CORS (permitir peticiones desde el navegador)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Manejar preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 // ===============================
 // ENDPOINTS PARA ESP32 HARDWARE
 // ===============================
