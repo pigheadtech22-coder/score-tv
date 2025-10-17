@@ -265,6 +265,7 @@
 }
 
 .btn-compartir,
+.btn-descargar,
 .btn-nuevo-partido {
   padding: 15px 30px;
   font-size: 1.1rem;
@@ -285,6 +286,17 @@
   background: linear-gradient(135deg, #4169e1 0%, #1e90ff 100%);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(30, 144, 255, 0.4);
+}
+
+.btn-descargar {
+  background: linear-gradient(135deg, #32cd32 0%, #228b22 100%);
+  color: white;
+}
+
+.btn-descargar:hover {
+  background: linear-gradient(135deg, #228b22 0%, #32cd32 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(50, 205, 50, 0.4);
 }
 
 .btn-nuevo-partido {

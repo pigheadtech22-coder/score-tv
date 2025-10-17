@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
+import html2canvas from 'html2canvas';
 import './ResultadoFinal.css';
 
 const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido }) => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const resultadoRef = useRef(null);
 
   useEffect(() => {
     if (!resultadoFinal) return;
@@ -69,50 +71,71 @@ SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
     generarQRCode();
   }, [resultadoFinal]);
 
-  const getEquipoGanador = () => {
-    return resultadoFinal.ganador === 1 
-      ? resultadoFinal.jugadores.equipo1 
-      : resultadoFinal.jugadores.equipo2;
-  };
+  const descargarImagenResultado = async () => {
+    try {
+      if (!resultadoRef.current) return;
 
-  const getEquipoPerdedor = () => {
-    return resultadoFinal.ganador === 1 
-      ? resultadoFinal.jugadores.equipo2 
-      : resultadoFinal.jugadores.equipo1;
-  };
+      // Generar imagen del resultado
+      const canvas = await html2canvas(resultadoRef.current, {
+        backgroundColor: '#1a2a4a',
+        scale: 2, // Alta calidad
+        useCORS: true,
+        allowTaint: false,
+        width: 800,
+        height: 600
+      });
 
-  const compartirResultado = async () => {
-    const texto = `🏆 ¡Partido finalizado!
-${resultadoFinal.torneo} - ${resultadoFinal.fase}
+      // Convertir a imagen y descargar
+      const link = document.createElement('a');
+      link.download = `resultado_${resultadoFinal.torneo}_${resultadoFinal.fecha.replace(/\//g, '-')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
 
-🥇 GANADORES: ${getEquipoGanador().join(' / ')}
-🥈 Equipo rival: ${getEquipoPerdedor().join(' / ')}
-
-📊 Resultado: ${resultadoFinal.resultado}
-⏱️ Duración: ${resultadoFinal.duracion}
-📅 ${resultadoFinal.fecha}`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Resultado del Partido de Pádel',
-          text: texto
-        });
-      } catch (error) {
-        console.log('Error compartiendo:', error);
-        copiarAlPortapapeles(texto);
-      }
-    } else {
-      copiarAlPortapapeles(texto);
+    } catch (error) {
+      console.error('Error generando imagen:', error);
+      alert('Error al generar la imagen. Inténtalo de nuevo.');
     }
   };
 
-  const copiarAlPortapapeles = (texto) => {
-    navigator.clipboard.writeText(texto).then(() => {
-      alert('¡Resultado copiado al portapapeles!');
-    }).catch(() => {
-      alert('Error al copiar. Selecciona y copia manualmente.');
-    });
+  const compartirResultado = async () => {
+    try {
+      if (!resultadoRef.current) return;
+
+      // Generar imagen del resultado
+      const canvas = await html2canvas(resultadoRef.current, {
+        backgroundColor: '#1a2a4a',
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        width: 800,
+        height: 600
+      });
+
+      // Convertir a blob
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], `resultado_${resultadoFinal.torneo}.png`, { type: 'image/png' });
+        
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          // API Web Share (móviles)
+          await navigator.share({
+            title: `Resultado ${resultadoFinal.torneo}`,
+            text: `🏆 Resultado del partido - ${resultadoFinal.torneo}`,
+            files: [file]
+          });
+        } else {
+          // Fallback: descargar imagen
+          const link = document.createElement('a');
+          link.download = `resultado_${resultadoFinal.torneo}_${resultadoFinal.fecha.replace(/\//g, '-')}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+        }
+      }, 'image/png');
+
+    } catch (error) {
+      console.error('Error compartiendo resultado:', error);
+      alert('Error al compartir. La imagen se descargará automáticamente.');
+      descargarImagenResultado();
+    }
   };
 
   if (!resultadoFinal) return null;
@@ -125,7 +148,7 @@ ${resultadoFinal.torneo} - ${resultadoFinal.fase}
           <button className="btn-cerrar" onClick={onCerrar}>✕</button>
         </div>
 
-        <div className="resultado-content">
+        <div className="resultado-content" ref={resultadoRef}>
           <div className="resultado-info">
             <div className="torneo-info">
               <h2>{resultadoFinal.torneo}</h2>
@@ -173,29 +196,24 @@ ${resultadoFinal.torneo} - ${resultadoFinal.fase}
           </div>
 
           <div className="qr-section">
-            <h4>📱 Compartir Resultado</h4>
+            <h4>📱 Resumen para Compartir</h4>
             <div className="qr-container">
               {qrCodeUrl && (
                 <img src={qrCodeUrl} alt="QR Code del resultado" className="qr-code" />
               )}
             </div>
             <p className="qr-instructions">
-              Escanea el QR para ver y compartir el resultado completo
+              Escanea el QR para ver el resumen de texto del resultado
             </p>
-            {(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
-              <div className="network-notice">
-                <p className="dev-info">
-                  ℹ️ <strong>Acceso local:</strong> Para compartir con otros dispositivos, 
-                  deben estar en la misma red WiFi
-                </p>
-              </div>
-            )}
           </div>
         </div>
 
         <div className="resultado-actions">
           <button className="btn-compartir" onClick={compartirResultado}>
-            📤 Compartir Resultado
+            📤 Compartir Imagen
+          </button>
+          <button className="btn-descargar" onClick={descargarImagenResultado}>
+            📷 Descargar PNG
           </button>
           <button className="btn-nuevo-partido" onClick={onNuevoPartido}>
             🆕 Nuevo Partido

@@ -55,7 +55,7 @@ if [ -f "package.json" ]; then
     fi
     
     # Verificar otras dependencias críticas
-    for dep in "react" "vite" "express"; do
+    for dep in "react" "vite" "express" "qrcode" "html2canvas"; do
         if npm list $dep > /dev/null 2>&1; then
             echo "✅ $dep: INSTALADO"
         else

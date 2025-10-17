@@ -32,7 +32,7 @@ npm install
 
 # Instalar dependencias específicas QR si no están
 echo "🔧 Verificando dependencias QR..."
-npm install qrcode @types/qrcode
+npm install qrcode @types/qrcode html2canvas
 
 # Verificar que las dependencias críticas estén instaladas
 echo "✅ Verificando instalación de dependencias críticas..."
