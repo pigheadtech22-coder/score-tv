@@ -1,4 +1,36 @@
 import React, { useState, useEffect } from 'react';
+
+  // Función para detectar si el partido ha terminado
+  function detectarFinPartido(sets) {
+    if (!sets || sets.length < 2) return { terminado: false, ganador: null };
+    
+    const setsEquipo1 = sets[0] || [0, 0, 0];
+    const setsEquipo2 = sets[1] || [0, 0, 0];
+    
+    let setsGanadosEquipo1 = 0;
+    let setsGanadosEquipo2 = 0;
+    
+    // Contar sets ganados por cada equipo
+    for (let i = 0; i < 3; i++) {
+      if (setsEquipo1[i] > setsEquipo2[i] && 
+          ((setsEquipo1[i] >= 6 && setsEquipo1[i] - setsEquipo2[i] >= 2) || setsEquipo1[i] >= 7)) {
+        setsGanadosEquipo1++;
+      } else if (setsEquipo2[i] > setsEquipo1[i] && 
+                 ((setsEquipo2[i] >= 6 && setsEquipo2[i] - setsEquipo1[i] >= 2) || setsEquipo2[i] >= 7)) {
+        setsGanadosEquipo2++;
+      }
+    }
+    
+    // Partido termina cuando un equipo gana 2 sets
+    if (setsGanadosEquipo1 >= 2) {
+      return { terminado: true, ganador: 1, resultado: `${setsGanadosEquipo1}-${setsGanadosEquipo2}` };
+    } else if (setsGanadosEquipo2 >= 2) {
+      return { terminado: true, ganador: 2, resultado: `${setsGanadosEquipo2}-${setsGanadosEquipo1}` };
+    }
+    
+    return { terminado: false, ganador: null, resultado: `${setsGanadosEquipo1}-${setsGanadosEquipo2}` };
+  }
+
   // Lógica unificada para sumar punto/set equipo 1
   function procesarPuntoEquipo1(m) {
     const pointOrder = [0, 15, 30, 40];
@@ -194,6 +226,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Marcador from './components/Marcador';
 import LogoAnimado from './components/LogoAnimado';
+import ResultadoFinal from './components/ResultadoFinal';
 console.log('Importando resetFlags desde esp32service');
 import { getFlags, resetFlags } from './services/esp32service';
 import Publicidad from './components/Publicidad';
@@ -297,6 +330,11 @@ function App() {
     tieBreakScore2: 0
   });
   const [jugadores, setJugadores] = useState([]);
+  
+  // Estado para controlar el fin del partido
+  const [partidoTerminado, setPartidoTerminado] = useState(false);
+  const [resultadoFinal, setResultadoFinal] = useState(null);
+  
   // Cronómetro de match time
   const [matchTimeActive, setMatchTimeActive] = useState(false);
   const [matchStartTime, setMatchStartTime] = useState(null);
@@ -322,18 +360,84 @@ function App() {
     return () => clearInterval(timer);
   }, [matchTimeActive, matchStartTime, matchSeconds, matchPausedTime]);
 
-  // Formatear segundos a HH:MM:SS
-    function formatMatchTime(secs) {
-      const h = Math.floor(secs / 3600).toString().padStart(2, '0');
-      const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
-      const s = (secs % 60).toString().padStart(2, '0');
-      return `${h}:${m}:${s}`;
+  // Detectar automáticamente el fin del partido
+  useEffect(() => {
+    const estadoPartido = detectarFinPartido(marcador.sets);
+    if (estadoPartido.terminado && !partidoTerminado) {
+      setPartidoTerminado(true);
+      setResultadoFinal({
+        ganador: estadoPartido.ganador,
+        resultado: estadoPartido.resultado,
+        sets: marcador.sets,
+        jugadores: {
+          equipo1: player1,
+          equipo2: player2
+        },
+        torneo: configMarcador.torneo || "TORNEO DE PRUEBA",
+        fase: configMarcador.fase || "FINAL",
+        duracion: formatMatchTime(matchSeconds),
+        fecha: new Date().toLocaleDateString('es-ES')
+      });
+      
+      // Detener el cronómetro cuando termine el partido
+      setMatchTimeActive(false);
+      
+      console.log('🏆 ¡PARTIDO TERMINADO!', estadoPartido);
     }
-    // Modo debug y logs
-    const [debug, setDebug] = useState(false);
-    const [debugInput, setDebugInput] = useState('');
-    const [logs, setLogs] = useState([]);
-    const DEBUG_PASSWORD = 'padel2025'; // Cambia la contraseña aquí
+  }, [marcador.sets, partidoTerminado, player1, player2, configMarcador, matchSeconds]);
+
+  // Formatear segundos a HH:MM:SS
+  function formatMatchTime(secs) {
+    const h = Math.floor(secs / 3600).toString().padStart(2, '0');
+    const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+  
+  // Funciones para manejar el resultado final
+  const cerrarResultadoFinal = () => {
+    setPartidoTerminado(false);
+    setResultadoFinal(null);
+  };
+  
+  const iniciarNuevoPartido = () => {
+    // Resetear todos los estados del marcador
+    setMarcador({
+      player1: ['Luciano Mansilla', 'Ignacio Caceres'],
+      player2: ['Daniel Oximea', 'Luis Pineda'],
+      score1: 0,
+      score2: 0,
+      set: 1,
+      server: 1,
+      action: 'update',
+      switch: false,
+      cambioCancha: false,
+      tieBreakMode: false,
+      tieBreakScore1: 0,
+      tieBreakScore2: 0,
+      sets: [[0,0,0],[0,0,0]]
+    });
+    
+    // Resetear estado del partido
+    setPartidoTerminado(false);
+    setResultadoFinal(null);
+    
+    // Resetear cronómetro
+    setMatchTimeActive(false);
+    setMatchStartTime(null);
+    setMatchPausedTime(0);
+    setMatchSeconds(0);
+    
+    console.log('🆕 Nuevo partido iniciado');
+  };
+  
+  // Modo debug y logs
+  const [debug, setDebug] = useState(false);
+  const [debugInput, setDebugInput] = useState('');
+  const [logs, setLogs] = useState([]);
+    
+    // Funciones para manejar el resultado final
+  const DEBUG_PASSWORD = 'padel2025'; // Cambia la contraseña aquí
 
     // Polling para banderas de control remoto ESP32 (frontend aplica la lógica)
     const flagEnProceso = React.useRef(false);
@@ -650,6 +754,14 @@ function App() {
                           logAccion('Botón - Punto Equipo 2 presionado');
                           setMarcador(m => restarPuntoEquipo2(m));
                         }} style={{background:'#ff851b',color:'#fff',padding:'8px',borderRadius:'6px'}}>- Punto Equipo 2</button>
+                        {/* Botón de debug para simular fin de partido */}
+                        <button onClick={() => {
+                          logAccion('Simulando fin de partido');
+                          setMarcador(m => ({
+                            ...m,
+                            sets: [[6, 6, 0], [4, 2, 0]]  // Equipo 1 gana 2-0
+                          }));
+                        }} style={{background:'#ff4136',color:'#fff',padding:'8px',borderRadius:'6px'}}>🏆 Simular Fin</button>
                       </div>
                     )}
                     <Marcador
@@ -667,6 +779,15 @@ function App() {
                     {/* Logo animado sobre el marcador durante cambio de cancha */}
                     {modo === 'cambioCancha' && (
                       <LogoAnimado onAnimationStart={handleLogoAnimStart} onAnimationEnd={handleLogoAnimEnd} />
+                    )}
+                    
+                    {/* Modal de resultado final cuando termina el partido */}
+                    {partidoTerminado && resultadoFinal && (
+                      <ResultadoFinal
+                        resultadoFinal={resultadoFinal}
+                        onCerrar={cerrarResultadoFinal}
+                        onNuevoPartido={iniciarNuevoPartido}
+                      />
                     )}
                   </>
                 )}
