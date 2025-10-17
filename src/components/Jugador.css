@@ -2,11 +2,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 4px;
+  margin: 7px -2px;
 }
 .foto-jugador {
   width: 180px;
-  height: 180px;
+  height: 160px;
   object-fit: cover;
   border-radius: 0;
   border: none;
@@ -14,9 +14,41 @@
 }
 
 .nombre-jugador {
-  margin-top: 4px;
-  font-size: 2.5rem;
+  margin-top: 0px;
+  font-size: 2rem;
   font-weight: bold;
   color: #fff;
   text-align: center;
+  max-width: 180px; /* Limitar ancho para forzar saltos de línea */
+  line-height: 1.1; /* Líneas más compactas */
+}
+
+/* Nombre simple (una sola palabra) */
+.nombre-simple {
+  font-size: 2rem; /* Tamaño normal para nombres simples */
+}
+
+/* Contenedor para nombres compuestos */
+.nombre-compuesto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px; /* Sin gap, usaremos margin negativo en apellidos */
+}
+
+/* Primer nombre (más pequeño) */
+.primer-nombre {
+  font-size: 1.4rem; /* Más pequeño para el primer nombre */
+  font-weight: 500; /* Menos peso */
+  color: #b0c4de; /* Color más tenue */
+  line-height: 1;
+}
+
+/* Apellidos (más grandes y prominentes) */
+.apellidos {
+  font-size: 2.2rem; /* Más grande para apellidos */
+  font-weight: bold; /* Negrita para dar prominencia */
+  color: #fff; /* Color principal */
+  line-height: 1;
+  margin-top: -5px; /* Margen negativo para superponer */
 }

@@ -1,5 +1,6 @@
 import Jugador from './Jugador';
 import './Marcador.css';
+import { useState } from 'react';
 
 // Icono de pelota de padel SVG
 const PadelBall = () => (
@@ -8,6 +9,57 @@ const PadelBall = () => (
 		<path d="M7 7 Q12 12 17 17" stroke="#fff" strokeWidth="2" fill="none" />
 	</svg>
 );
+
+// Placeholder para logo si no se encuentra
+const LogoPlaceholder = () => (
+	<div className="logo-placeholder">
+		<svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect width="100" height="100" rx="8" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" strokeWidth="2"/>
+			<text x="50" y="45" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="12" fontWeight="bold">TU</text>
+			<text x="50" y="60" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="12" fontWeight="bold">LOGO</text>
+		</svg>
+	</div>
+);
+
+// Componente Logo con manejo de error
+const Logo = () => {
+	const [logoError, setLogoError] = useState(false);
+	
+	return (
+		<div className="marcador-logo">
+			{!logoError ? (
+				<img 
+					src="/logos/logo.png" 
+					alt="Logo" 
+					className="logo-image"
+					onError={() => setLogoError(true)}
+				/>
+			) : (
+				<LogoPlaceholder />
+			)}
+		</div>
+	);
+};
+
+// Componente Logo Derecho con manejo de error independiente
+const LogoRight = () => {
+	const [logoError, setLogoError] = useState(false);
+	
+	return (
+		<div className="marcador-logo">
+			{!logoError ? (
+				<img 
+					src="/logos/logo-right.png" 
+					alt="Logo Derecho" 
+					className="logo-image"
+					onError={() => setLogoError(true)}
+				/>
+			) : (
+				<LogoPlaceholder />
+			)}
+		</div>
+	);
+};
 
 export default function Marcador({ 
   player1, 
@@ -33,12 +85,20 @@ export default function Marcador({
 	// Highlight amarillo solo si ambos scores son 40 y goldenPoint está activo
 	const isGoldenPoint = score1 === 40 && score2 === 40 && goldenPoint;
 
-			return (
-				<div className="marcador-layout">
-					<div className="marcador-header">
-						<div className="marcador-title">{torneo}</div>
-						<div className="marcador-subtitle">{fase}</div>
+		return (
+			<div className="marcador-layout">
+				<div className="marcador-header">
+					<div className="marcador-header-content">
+						<Logo />
+						<div className="marcador-info">
+							<div className="marcador-title">{torneo}</div>
+							<div className="marcador-subtitle">{fase}</div>
+						</div>
+						<div className="marcador-logo-right">
+							<LogoRight />
+						</div>
 					</div>
+				</div>
 			<table className="marcador-table">
 				<thead>
 					<tr>

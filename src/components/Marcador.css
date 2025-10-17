@@ -17,24 +17,84 @@
   box-shadow: 0 2px 16px rgba(0,0,0,0.3);
   padding: 8px 24px 16px 24px;
   width: 100vw;
-  height: 105vh;
+  height: 100vh; /* Cambiado de 105vh a 100vh para eliminar scroll */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-family: 'Segoe UI', Arial, sans-serif;
-  overflow-y: hidden;
+  overflow: hidden; /* Ocultar scroll tanto vertical como horizontal */
 }
+
 .marcador-title {
-  font-size: 3rem;
+  font-size: 5rem;
   font-weight: bold;
   letter-spacing: 2px;
 }
 .marcador-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   color: #b0c4de;
-  margin-top: 4px;
+  margin-top: -20px; /* ← Margen negativo para juntar más al título */
+  margin-bottom: 20px; /* ← Espacio después del subtítulo */
+}
+
+/* Nuevo layout para header con logo */
+.marcador-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.marcador-logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.marcador-info {
+  flex: 1;
+  text-align: center;
+}
+
+.marcador-logo-right {
+  flex: 0 0 auto;
+  width: 120px; /* Ajustado para logo más grande de 120px */
+}
+
+.logo-image {
+  height: 120px; /* Aumentado de 80px a 120px (+50% más grande) */
+  width: 120px; /* Forzar cuadrado para logos cuadrados */
+  object-fit: contain;
+  border-radius: 12px; /* Bordes redondeados proporcionalmente más grandes */
+  filter: drop-shadow(0 3px 12px rgba(0,0,0,0.4)); /* Sombra más pronunciada para el tamaño mayor */
+  transition: transform 0.3s ease;
+  /* Fondo sutil removido para look más limpio */
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+
+/* Placeholder para logo */
+.logo-placeholder {
+  width: 120px; /* Ajustado al nuevo tamaño */
+  height: 120px; /* Ajustado al nuevo tamaño */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px; /* Bordes proporcionalmente más grandes */
+  background: rgba(255,255,255,0.05);
+  border: 2px dashed rgba(255,255,255,0.3);
+  transition: transform 0.3s ease;
+}
+
+.logo-placeholder:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.1);
 }
 .marcador-table {
   width: 90%;
@@ -43,12 +103,19 @@
   margin-bottom: 16px;
 }
 .marcador-table th, .marcador-table td {
-  padding: 8px 12px;
+  padding: 0px 2px;
   text-align: center;
-  font-size: 3.5rem; /* Aumentado de 2.5rem a 3.5rem para sets */
 }
+
+/* Tamaño específico para headers (SET 1, SET 2, SET 3) */
 .marcador-table th {
+  font-size: 3.5rem; /* Tamaño para las palabras "SET 1", "SET 2", "SET 3" */
   border-bottom: 2px solid #1e90ff;
+}
+
+/* Tamaño específico para los números de sets */
+.marcador-table td:not(.marcador-game) {
+  font-size: 5.5rem; /* Tamaño solo para los números de set (0, 1, 2, etc.) */
 }
 .marcador-table td {
   background: #223a6a;
@@ -62,7 +129,7 @@
   color: #fff;
   font-weight: bold;
   border-radius: 6px;
-  font-size: 4.5rem; /* Aumentado de 3rem a 4.5rem para game (puntos actuales) */
+  font-size: 6rem !important; /* Aumentado de 3rem a 4.5rem para game (puntos actuales) */
 }
 .marcador-nombre {
   display: flex;
@@ -76,14 +143,14 @@
   margin-top: 16px;
 }
 .marcador-matchtime {
-  font-size: 1.1rem;
-  text-align: left;
+  font-size: 2.2rem;
+  text-align: center;
 }
 .marcador-matchtime span {
   display: block;
-  font-size: 2rem;
+  font-size: 3.5rem;
   font-weight: bold;
-  margin-top: 4px;
+  margin-top: -20px;
 }
 /* Highlight para el set activo con efecto de iluminación y transparencia */
 .set-activo {

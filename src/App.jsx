@@ -212,6 +212,18 @@ function App() {
     const timer = setTimeout(() => setNavVisible(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Aplicar clase para ocultar scroll vertical
+  useEffect(() => {
+    document.body.classList.add('marcador-sin-scroll');
+    document.documentElement.classList.add('marcador-sin-scroll');
+    
+    // Cleanup al desmontar
+    return () => {
+      document.body.classList.remove('marcador-sin-scroll');
+      document.documentElement.classList.remove('marcador-sin-scroll');
+    };
+  }, []);
   // Estados para los jugadores seleccionados
   const [player1, setPlayer1] = useState(["", ""]);
   const [player2, setPlayer2] = useState(["", ""]);
@@ -647,8 +659,8 @@ function App() {
                       player2={player2}
                       goldenPoint={configMarcador.puntoOro}
                       superMuerteSubita={configMarcador.superMuerteSubita}
-                      torneo={configMarcador.torneo}
-                      fase={configMarcador.fase}
+                      torneo={configMarcador.torneo || "TORNEO DE PRUEBA"}
+                      fase={configMarcador.fase || "FINAL"}
                       setMax={6}
                       matchTime={formatMatchTime(matchSeconds)}
                     />
