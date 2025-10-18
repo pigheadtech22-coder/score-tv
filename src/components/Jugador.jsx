@@ -1,16 +1,22 @@
 import './Jugador.css';
 
-const defaultFoto = '/jugadores/default.jpeg';
-const formatos = ['jpeg', 'jpg', 'png'];
+const defaultFoto = '/jugadores/default.jpg';
 
 export default function Jugador({ nombre, foto, lado, server }) {
-	let intentos = 0;
 	const handleImgError = (e) => {
+		// Si ya intentó con la imagen original, usar default
+		if (e.target.src.includes('default.jpg')) {
+			return;
+		}
+		
 		const actualSrc = e.target.src;
 		const base = actualSrc.replace(/\.(jpeg|jpg|png)$/i, '');
-		if (intentos < formatos.length) {
-			e.target.src = base + '.' + formatos[intentos];
-			intentos++;
+		
+		// Intentar con diferentes extensiones
+		if (actualSrc.includes('.png')) {
+			e.target.src = base + '.jpeg';
+		} else if (actualSrc.includes('.jpeg')) {
+			e.target.src = base + '.jpg';
 		} else {
 			e.target.src = defaultFoto;
 		}

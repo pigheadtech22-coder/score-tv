@@ -326,7 +326,7 @@ export default function PanelControl() {
     const base = foto.replace(/\.(jpeg|jpg|png)$/i, '');
     const [src, setSrc] = React.useState(foto);
     const intentos = React.useRef(0);
-    const defaultFoto = '/jugadores/default.jpeg';
+    const defaultFoto = '/jugadores/default.jpg';
     const handleError = () => {
       if (intentos.current < formatos.length) {
         setSrc(base + '.' + formatos[intentos.current]);

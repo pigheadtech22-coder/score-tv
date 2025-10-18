@@ -117,7 +117,7 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
           // API Web Share (móviles)
           await navigator.share({
             title: `Resultado ${resultadoFinal.torneo}`,
-            text: `🏆 Resultado del partido - ${resultadoFinal.torneo}`,
+            text: `Resultado del partido - ${resultadoFinal.torneo}`,
             files: [file]
           });
         } else {
@@ -142,7 +142,7 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
     <div className="resultado-final-overlay">
       <div className="resultado-final-modal">
         <div className="resultado-header">
-          <h1>🏆 ¡PARTIDO FINALIZADO!</h1>
+          <h1>¡PARTIDO FINALIZADO!</h1>
           <button className="btn-cerrar" onClick={onCerrar}>✕</button>
         </div>
 
@@ -245,7 +245,7 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
 
           <div className="sets-y-qr">
             <div className="sets-detalle">
-              <h4>📊 Detalle por Sets</h4>
+              <h4>DETALLE POR SETS</h4>
               <div className="sets-grid">
                 {[0, 1, 2].map(setIdx => (
                   <div key={setIdx} className="set-score">
@@ -274,29 +274,29 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
 
         <div className="resultado-actions">
           <div className="actions-row">
-            <h4 style={{color: '#ffd700'}}>📊 Imagen con Fotos</h4>
+            <h4 style={{color: '#ffd700'}}>IMAGEN CON FOTOS</h4>
             <button className="btn-compartir" onClick={compartirResultado}>
-              📤 Compartir
+              COMPARTIR
             </button>
             <button className="btn-descargar" onClick={descargarImagenResultado}>
-              📷 Descargar
+              DESCARGAR
             </button>
           </div>
           
           <div className="actions-row">
-            <h4 style={{color: '#4fc3f7'}}>🎾 Marcador Live</h4>
+            <h4 style={{color: '#4fc3f7'}}>MARCADOR LIVE</h4>
             <button className="btn-marcador-compartir" onClick={onCompartirMarcador}>
-              🏆 Compartir
+              COMPARTIR
             </button>
             <button className="btn-marcador-descargar" onClick={onDescargarMarcador}>
-              🖼️ Descargar
+              DESCARGAR
             </button>
           </div>
 
           <div className="actions-row">
-            <h4 style={{color: '#90a4ae'}}>🆕 Opciones</h4>
+            <h4 style={{color: '#90a4ae'}}>OPCIONES</h4>
             <button className="btn-nuevo-partido" onClick={onNuevoPartido}>
-              Nuevo Partido
+              NUEVO PARTIDO
             </button>
           </div>
         </div>
