@@ -76,7 +76,16 @@ NoDisplay=false
 X-GNOME-Autostart-enabled=true
 EOF
 
+# Instalar acceso directo en escritorio
+echo "🖥️ Instalando acceso directo en escritorio..."
+chmod +x install-desktop-shortcut.sh
+./install-desktop-shortcut.sh
+
 echo "✅ Instalación completada!"
-echo "🚀 Para iniciar el servicio: sudo systemctl start marcador-tv"
+echo "🚀 Para iniciar manualmente: sudo systemctl start marcador-tv"
 echo "📊 Para ver logs: sudo journalctl -u marcador-tv -f"
 echo "🌐 La aplicación estará disponible en: http://[IP-DE-TU-PI]:5173"
+echo ""
+echo "🖱️ NUEVO: Acceso directo instalado en el escritorio!"
+echo "   👆 Haz doble clic en 'Marcador TV' para iniciar"
+echo "   🔄 Se auto-actualiza desde git cada vez que lo ejecutas"

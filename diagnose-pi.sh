@@ -5,6 +5,15 @@
 echo "🔍 Diagnóstico del Sistema Marcador TV - Solución 'Aw Snap'"
 echo "=========================================================="
 
+# Detectar argumentos de modo
+DEBUG_MODE=false
+if [ "$1" = "--debug" ] || [ "$1" = "-d" ]; then
+    DEBUG_MODE=true
+    echo "🛠️ Modo DEBUG activado - Con herramientas de desarrollo"
+else
+    echo "🎯 Modo PRODUCCIÓN - Kiosk mode completo"
+fi
+
 # Verificar directorio del proyecto
 echo ""
 echo "📁 Verificando directorio del proyecto..."

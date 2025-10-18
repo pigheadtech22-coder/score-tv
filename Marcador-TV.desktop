@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Marcador TV
+Comment=Sistema de Marcador para Pádel - Auto-actualizable
+Exec=/opt/marcador-tv/marcador-tv-launcher.sh
+Icon=/opt/marcador-tv/public/logos/logo.png
+Path=/opt/marcador-tv
+Terminal=true
+StartupNotify=true
+Categories=Game;Sports;
+Keywords=padel;marcador;score;tv;deportes;
