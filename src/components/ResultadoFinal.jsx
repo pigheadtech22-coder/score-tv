@@ -3,73 +3,59 @@ import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
 import './ResultadoFinal.css';
 
-const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido }) => {
+const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirMarcador, onDescargarMarcador, jugadores }) => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const resultadoRef = useRef(null);
 
   useEffect(() => {
     if (!resultadoFinal) return;
 
-    const generarQRCode = async () => {
-      try {
-        // Crear datos estructurados y generar URL apropiada
-        const generarURLResultado = () => {
-          const hostname = window.location.hostname;
-          const protocol = window.location.protocol;
-          const port = window.location.port;
-          
-          // Si estamos en localhost (desarrollo), usar IP local si es posible
-          if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            // En desarrollo, intentar detectar IP local
-            return `${protocol}//${hostname}${port ? ':' + port : ''}/resultado/${Date.now()}`;
-          } else {
-            // En Pi (producción), usar la IP real de la Pi
-            return `${protocol}//${hostname}${port ? ':' + port : ''}/resultado/${Date.now()}`;
-          }
-        };
+    // Esperar un poco para que el modal se renderice completamente
+    const timer = setTimeout(async () => {
+      await generarImagenYQR();
+    }, 500);
 
-        const urlResultado = generarURLResultado();
-
-        // Generar texto resumido para el QR
-        const textoQR = `🏆 RESULTADO PÁDEL
-📅 ${resultadoFinal.fecha}
-🏟️ ${resultadoFinal.torneo}
-🥇 ${resultadoFinal.fase}
-
-👥 EQUIPO 1: ${resultadoFinal.jugadores.equipo1.join(' / ')}
-👥 EQUIPO 2: ${resultadoFinal.jugadores.equipo2.join(' / ')}
-
-🏆 GANADOR: EQUIPO ${resultadoFinal.ganador}
-📊 RESULTADO: ${resultadoFinal.resultado}
-
-📍 Sets detallados:
-SET 1: ${resultadoFinal.sets[0][0]} - ${resultadoFinal.sets[1][0]}
-SET 2: ${resultadoFinal.sets[0][1]} - ${resultadoFinal.sets[1][1]}
-SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
-
-⏱️ Duración: ${resultadoFinal.duracion}
-
-🌐 Red Local: ${window.location.hostname}
-🔗 Ver completo: ${urlResultado}`;
-
-        // Generar QR Code
-        const qrDataUrl = await QRCode.toDataURL(textoQR, {
-          width: 256,
-          margin: 2,
-          color: {
-            dark: '#1a2a4a',
-            light: '#ffffff'
-          }
-        });
-
-        setQrCodeUrl(qrDataUrl);
-      } catch (error) {
-        console.error('Error generando QR:', error);
-      }
-    };
-
-    generarQRCode();
+    return () => clearTimeout(timer);
   }, [resultadoFinal]);
+
+  const generarImagenYQR = async () => {
+    try {
+      if (!resultadoRef.current) return;
+
+      // Capturar imagen del modal completo con las fotos de jugadores
+      const canvas = await html2canvas(resultadoRef.current, {
+        backgroundColor: null, // Fondo transparente
+        scale: 2, // Alta calidad
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        removeContainer: true
+      });
+
+      // Convertir a imagen
+      const imagenDataUrl = canvas.toDataURL('image/png');
+      
+      // Generar QR simple con texto para lectura rápida
+      const textoQR = `🏆 ${resultadoFinal.torneo} - ${resultadoFinal.fase}
+� ${resultadoFinal.fecha}
+🏆 Ganador: Equipo ${resultadoFinal.ganador}
+📊 Resultado: ${resultadoFinal.resultado}
+⏱️ ${resultadoFinal.duracion}`;
+
+      const qrDataUrl = await QRCode.toDataURL(textoQR, {
+        width: 200,
+        margin: 2,
+        color: {
+          dark: '#1a2a4a',
+          light: '#ffffff'
+        }
+      });
+
+      setQrCodeUrl(qrDataUrl);
+    } catch (error) {
+      console.error('Error generando imagen y QR:', error);
+    }
+  };
 
   const descargarImagenResultado = async () => {
     try {
@@ -101,7 +87,7 @@ SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
     try {
       if (!resultadoRef.current) return;
 
-      // Generar imagen del resultado
+      // Generar imagen del modal completo con fotos de jugadores
       const canvas = await html2canvas(resultadoRef.current, {
         backgroundColor: '#1a2a4a',
         scale: 2,
@@ -113,7 +99,7 @@ SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
 
       // Convertir a blob
       canvas.toBlob(async (blob) => {
-        const file = new File([blob], `resultado_${resultadoFinal.torneo}.png`, { type: 'image/png' });
+        const file = new File([blob], `resultado_${resultadoFinal.torneo}_${resultadoFinal.fecha.replace(/\//g, '-')}.png`, { type: 'image/png' });
         
         if (navigator.share && navigator.canShare({ files: [file] })) {
           // API Web Share (móviles)
@@ -158,7 +144,39 @@ SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
 
             <div className="equipos-resultado">
               <div className={`equipo ${resultadoFinal.ganador === 1 ? 'ganador' : 'perdedor'}`}>
-                <h4>EQUIPO 1 {resultadoFinal.ganador === 1 ? '🏆' : ''}</h4>
+                <div className="fotos-equipo">
+                  {resultadoFinal.jugadores.equipo1.map((jugador, idx) => {
+                    // Buscar el jugador en los datos para obtener su foto
+                    const jugadorData = jugadores?.find(j => j.nombre === jugador);
+                    let fotoSrc = jugadorData?.foto || '/jugadores/default.jpg';
+                    
+                    // Si la foto tiene .jpeg, cambiarla a la extensión real
+                    if (fotoSrc.includes('.jpeg')) {
+                      const nombreBase = fotoSrc.replace('.jpeg', '');
+                      fotoSrc = nombreBase + '.png'; // La mayoría son .png
+                    }
+                    
+                    return (
+                      <div key={idx} className="foto-jugador">
+                        <img 
+                          src={fotoSrc}
+                          alt={jugador}
+                          onError={(e) => {
+                            // Intentar con diferentes extensiones
+                            const base = e.target.src.split('.').slice(0, -1).join('.');
+                            if (e.target.src.includes('.png')) {
+                              e.target.src = base + '.jpeg';
+                            } else if (e.target.src.includes('.jpeg')) {
+                              e.target.src = base + '.jpg';
+                            } else {
+                              e.target.src = '/jugadores/default.jpg';
+                            }
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
                 <div className="jugadores">
                   {resultadoFinal.jugadores.equipo1.map((jugador, idx) => (
                     <span key={idx} className="jugador">{jugador}</span>
@@ -171,7 +189,39 @@ SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
               </div>
 
               <div className={`equipo ${resultadoFinal.ganador === 2 ? 'ganador' : 'perdedor'}`}>
-                <h4>EQUIPO 2 {resultadoFinal.ganador === 2 ? '🏆' : ''}</h4>
+                <div className="fotos-equipo">
+                  {resultadoFinal.jugadores.equipo2.map((jugador, idx) => {
+                    // Buscar el jugador en los datos para obtener su foto
+                    const jugadorData = jugadores?.find(j => j.nombre === jugador);
+                    let fotoSrc = jugadorData?.foto || '/jugadores/default.jpg';
+                    
+                    // Si la foto tiene .jpeg, cambiarla a la extensión real
+                    if (fotoSrc.includes('.jpeg')) {
+                      const nombreBase = fotoSrc.replace('.jpeg', '');
+                      fotoSrc = nombreBase + '.png'; // La mayoría son .png
+                    }
+                    
+                    return (
+                      <div key={idx} className="foto-jugador">
+                        <img 
+                          src={fotoSrc}
+                          alt={jugador}
+                          onError={(e) => {
+                            // Intentar con diferentes extensiones
+                            const base = e.target.src.split('.').slice(0, -1).join('.');
+                            if (e.target.src.includes('.png')) {
+                              e.target.src = base + '.jpeg';
+                            } else if (e.target.src.includes('.jpeg')) {
+                              e.target.src = base + '.jpg';
+                            } else {
+                              e.target.src = '/jugadores/default.jpg';
+                            }
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
                 <div className="jugadores">
                   {resultadoFinal.jugadores.equipo2.map((jugador, idx) => (
                     <span key={idx} className="jugador">{jugador}</span>
@@ -179,9 +229,11 @@ SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
                 </div>
               </div>
             </div>
+          </div>
 
+          <div className="sets-y-qr">
             <div className="sets-detalle">
-              <h4>Detalle por Sets</h4>
+              <h4>📊 Detalle por Sets</h4>
               <div className="sets-grid">
                 {[0, 1, 2].map(setIdx => (
                   <div key={setIdx} className="set-score">
@@ -193,31 +245,48 @@ SET 3: ${resultadoFinal.sets[0][2]} - ${resultadoFinal.sets[1][2]}
                 ))}
               </div>
             </div>
-          </div>
 
-          <div className="qr-section">
-            <h4>📱 Resumen para Compartir</h4>
-            <div className="qr-container">
-              {qrCodeUrl && (
-                <img src={qrCodeUrl} alt="QR Code del resultado" className="qr-code" />
-              )}
+            <div className="qr-section">
+              <h4>📱 Resumen del Partido</h4>
+              <div className="qr-container">
+                {qrCodeUrl && (
+                  <img src={qrCodeUrl} alt="QR Code del resultado" className="qr-code" />
+                )}
+              </div>
+              <p className="qr-instructions">
+                Escanea para ver resumen rápido del resultado
+              </p>
             </div>
-            <p className="qr-instructions">
-              Escanea el QR para ver el resumen de texto del resultado
-            </p>
           </div>
         </div>
 
         <div className="resultado-actions">
-          <button className="btn-compartir" onClick={compartirResultado}>
-            📤 Compartir Imagen
-          </button>
-          <button className="btn-descargar" onClick={descargarImagenResultado}>
-            📷 Descargar PNG
-          </button>
-          <button className="btn-nuevo-partido" onClick={onNuevoPartido}>
-            🆕 Nuevo Partido
-          </button>
+          <div className="actions-row">
+            <h4 style={{color: '#ffd700'}}>📊 Imagen con Fotos</h4>
+            <button className="btn-compartir" onClick={compartirResultado}>
+              📤 Compartir
+            </button>
+            <button className="btn-descargar" onClick={descargarImagenResultado}>
+              📷 Descargar
+            </button>
+          </div>
+          
+          <div className="actions-row">
+            <h4 style={{color: '#4fc3f7'}}>🎾 Marcador Live</h4>
+            <button className="btn-marcador-compartir" onClick={onCompartirMarcador}>
+              🏆 Compartir
+            </button>
+            <button className="btn-marcador-descargar" onClick={onDescargarMarcador}>
+              🖼️ Descargar
+            </button>
+          </div>
+
+          <div className="actions-row">
+            <h4 style={{color: '#90a4ae'}}>🆕 Opciones</h4>
+            <button className="btn-nuevo-partido" onClick={onNuevoPartido}>
+              Nuevo Partido
+            </button>
+          </div>
         </div>
       </div>
     </div>

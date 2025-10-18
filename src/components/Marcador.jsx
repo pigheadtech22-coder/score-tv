@@ -1,6 +1,6 @@
 import Jugador from './Jugador';
 import './Marcador.css';
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 
 // Icono de pelota de padel SVG
 const PadelBall = () => (
@@ -61,7 +61,7 @@ const LogoRight = () => {
 	);
 };
 
-export default function Marcador({ 
+const Marcador = forwardRef(({ 
   player1, 
   player2, 
   score1, 
@@ -77,7 +77,7 @@ export default function Marcador({
   tieBreakScore2 = 0,
   torneo = "TORNEO PÁDEL",
   fase = "SEMIFINAL"
-}) {
+}, ref) => {
 		const pareja1 = Array.isArray(player1) ? player1 : [player1];
 		const pareja2 = Array.isArray(player2) ? player2 : [player2];
 		const jugadores1 = pareja1.map(nombre => jugadores.find(j => j.nombre === nombre));
@@ -86,7 +86,7 @@ export default function Marcador({
 	const isGoldenPoint = score1 === 40 && score2 === 40 && goldenPoint;
 
 		return (
-			<div className="marcador-layout">
+			<div className="marcador-layout" ref={ref}>
 				<div className="marcador-header">
 					<div className="marcador-header-content">
 						<Logo />
@@ -172,4 +172,6 @@ export default function Marcador({
 				</div>
 			</div>
 		);
-}
+});
+
+export default Marcador;

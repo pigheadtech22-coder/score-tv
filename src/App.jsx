@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import html2canvas from 'html2canvas';
 
   // Función para detectar si el partido ha terminado
   function detectarFinPartido(sets) {
@@ -237,6 +238,7 @@ import './Marcador.css';
 
 function App() {
   const [modo, setModo] = useState('marcador');
+  const marcadorRef = useRef(null);
   // Scroll vertical siempre visible
   // Estado para mostrar/ocultar el banner superior
   const [navVisible, setNavVisible] = useState(false);
@@ -625,6 +627,87 @@ function App() {
     if (debug) setLogs(l => [...l, `[ACTION] ${msg}`]);
   };
 
+  // Funciones para capturar y compartir imagen del marcador
+  const capturarMarcador = async () => {
+    try {
+      if (!marcadorRef.current) {
+        console.error('Referencia del marcador no encontrada');
+        return null;
+      }
+
+      // Capturar solo el marcador sin bordes negros
+      const canvas = await html2canvas(marcadorRef.current, {
+        backgroundColor: null, // Fondo transparente
+        scale: 2, // Alta calidad
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        removeContainer: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: window.innerWidth,
+        windowHeight: window.innerHeight,
+        width: marcadorRef.current.scrollWidth,
+        height: marcadorRef.current.scrollHeight
+      });
+
+      return canvas;
+    } catch (error) {
+      console.error('Error capturando marcador:', error);
+      alert('Error al capturar la imagen del marcador. Inténtalo de nuevo.');
+      return null;
+    }
+  };
+
+  const compartirImagenMarcador = async () => {
+    try {
+      const canvas = await capturarMarcador();
+      if (!canvas) return;
+
+      // Convertir a blob
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], `marcador_${configMarcador.torneo || 'partido'}_${new Date().toISOString().split('T')[0]}.png`, { type: 'image/png' });
+        
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          // API Web Share (móviles)
+          await navigator.share({
+            title: `Marcador - ${configMarcador.torneo || 'Partido de Pádel'}`,
+            text: `🎾 Marcador en vivo - ${configMarcador.torneo || 'Partido de Pádel'}`,
+            files: [file]
+          });
+        } else {
+          // Fallback: descargar imagen
+          const link = document.createElement('a');
+          link.download = `marcador_${configMarcador.torneo || 'partido'}_${new Date().toISOString().split('T')[0]}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+        }
+      }, 'image/png');
+
+    } catch (error) {
+      console.error('Error compartiendo marcador:', error);
+      alert('Error al compartir. La imagen se descargará automáticamente.');
+      descargarImagenMarcador();
+    }
+  };
+
+  const descargarImagenMarcador = async () => {
+    try {
+      const canvas = await capturarMarcador();
+      if (!canvas) return;
+
+      // Convertir a imagen y descargar
+      const link = document.createElement('a');
+      link.download = `marcador_${configMarcador.torneo || 'partido'}_${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+    } catch (error) {
+      console.error('Error descargando marcador:', error);
+      alert('Error al descargar la imagen del marcador. Inténtalo de nuevo.');
+    }
+  };
+
   // Handlers de animación
   const handleLogoAnimStart = () => {
     setTransicionEnCurso(true);
@@ -762,9 +845,13 @@ function App() {
                             sets: [[6, 6, 0], [4, 2, 0]]  // Equipo 1 gana 2-0
                           }));
                         }} style={{background:'#ff4136',color:'#fff',padding:'8px',borderRadius:'6px'}}>🏆 Simular Fin</button>
+                        {/* Botones para capturar y compartir marcador */}
+                        <button onClick={compartirImagenMarcador} style={{background:'#1e90ff',color:'#fff',padding:'8px',borderRadius:'6px'}}>📤 Compartir Marcador</button>
+                        <button onClick={descargarImagenMarcador} style={{background:'#32cd32',color:'#fff',padding:'8px',borderRadius:'6px'}}>📷 Descargar PNG</button>
                       </div>
                     )}
                     <Marcador
+                      ref={marcadorRef}
                       {...marcador}
                       jugadores={jugadores}
                       player1={player1}
@@ -787,6 +874,9 @@ function App() {
                         resultadoFinal={resultadoFinal}
                         onCerrar={cerrarResultadoFinal}
                         onNuevoPartido={iniciarNuevoPartido}
+                        onCompartirMarcador={compartirImagenMarcador}
+                        onDescargarMarcador={descargarImagenMarcador}
+                        jugadores={jugadores}
                       />
                     )}
                   </>
