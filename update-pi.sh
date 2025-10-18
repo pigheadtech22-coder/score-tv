@@ -50,6 +50,13 @@ else
     npm install --save-dev @types/qrcode
 fi
 
+if npm list html2canvas > /dev/null 2>&1; then
+    echo "✅ html2canvas instalado correctamente"
+else
+    echo "❌ Error: html2canvas no se instaló. Intentando instalación manual..."
+    npm install --save html2canvas
+fi
+
 # Reconstruir aplicación
 echo "🔨 Reconstruyendo aplicación..."
 npm run build
