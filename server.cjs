@@ -31,8 +31,8 @@ let internalFlags = {
   cambioCancha: false
 };
 
-// Middleware para parsear JSON
-app.use(express.json());
+// Middleware para parsear JSON con límite mayor para imágenes
+app.use(express.json({ limit: '10mb' })); // Aumentado de default a 10MB
 
 // Middleware para CORS (permitir peticiones desde el navegador)
 app.use((req, res, next) => {
@@ -51,11 +51,19 @@ app.use((req, res, next) => {
 // Endpoint para guardar imagen de resultado
 app.post('/api/guardar-resultado', (req, res) => {
   try {
+    console.log('📥 Recibida petición para guardar resultado...');
     const { imagen, nombre } = req.body;
     
     if (!imagen || !nombre) {
+      console.log('❌ Faltan datos: imagen o nombre');
       return res.status(400).json({ error: 'Imagen y nombre son requeridos' });
     }
+
+    console.log('📝 Datos recibidos:', { 
+      nombre, 
+      tipoImagen: imagen.substring(0, 30) + '...',
+      tamano: imagen.length 
+    });
 
     // Convertir base64 a buffer
     const base64Data = imagen.replace(/^data:image\/png;base64,/, '');
@@ -66,16 +74,19 @@ app.post('/api/guardar-resultado', (req, res) => {
     
     fs.writeFileSync(rutaArchivo, buffer);
     
-    console.log(`✅ Imagen guardada: ${rutaArchivo}`);
+    console.log(`✅ Imagen guardada exitosamente: ${rutaArchivo}`);
+    console.log(`📊 Tamaño del archivo: ${buffer.length} bytes`);
+    
     res.json({ 
       success: true, 
       url: `/${nombre}`,
-      message: 'Imagen guardada correctamente' 
+      message: 'Imagen guardada correctamente',
+      tamaño: buffer.length
     });
     
   } catch (error) {
     console.error('❌ Error guardando imagen:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({ error: 'Error interno del servidor', details: error.message });
   }
 });
 

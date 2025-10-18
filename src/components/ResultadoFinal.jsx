@@ -3,7 +3,7 @@ import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
 import './ResultadoFinal.css';
 
-const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirMarcador, onDescargarMarcador, jugadores }) => {
+const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirMarcador, onDescargarMarcador, onCapturarMarcadorLive, jugadores }) => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const resultadoRef = useRef(null);
 
@@ -20,55 +20,50 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
 
   const generarImagenYQR = async () => {
     try {
-      if (!resultadoRef.current) return;
-
-      // Capturar imagen del modal completo con las fotos de jugadores
-      const canvas = await html2canvas(resultadoRef.current, {
-        backgroundColor: null, // Fondo transparente
-        scale: 2, // Alta calidad
-        useCORS: true,
-        allowTaint: false,
-        logging: false,
-        removeContainer: true
-      });
-
-      // Convertir a imagen
-      const imagenDataUrl = canvas.toDataURL('image/png');
+      // En lugar de capturar el modal, capturar el marcador en vivo
+      console.log('📸 Generando imagen del marcador en vivo...');
       
-      // Guardar imagen en el servidor
-      try {
-        const response = await fetch('/api/guardar-resultado', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            imagen: imagenDataUrl,
-            nombre: 'resultado.png'
-          })
-        });
+      // Llamar a la función de captura del marcador del componente padre
+      if (onCapturarMarcadorLive) {
+        const imagenDataUrl = await onCapturarMarcadorLive();
         
-        if (response.ok) {
-          console.log('✅ Imagen guardada en servidor');
+        if (imagenDataUrl) {
+          // Guardar imagen en el servidor
+          try {
+            const response = await fetch('/api/guardar-resultado', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                imagen: imagenDataUrl,
+                nombre: 'marcador-live.png'
+              })
+            });
+            
+            if (response.ok) {
+              console.log('✅ Imagen del marcador en vivo guardada en servidor');
+            }
+          } catch (error) {
+            console.error('❌ Error guardando imagen en servidor:', error);
+          }
+
+          // Generar QR con URL a la imagen guardada (servidor Express en puerto 3000)
+          const baseUrl = window.location.protocol + '//' + window.location.hostname + ':3000';
+          const urlImagen = `${baseUrl}/marcador-live.png?t=${Date.now()}`; // timestamp para evitar cache
+          
+          const qrDataUrl = await QRCode.toDataURL(urlImagen, {
+            width: 200,
+            margin: 2,
+            color: {
+              dark: '#1a2a4a',
+              light: '#ffffff'
+            }
+          });
+
+          setQrCodeUrl(qrDataUrl);
         }
-      } catch (error) {
-        console.error('❌ Error guardando imagen en servidor:', error);
       }
-
-      // Generar QR con URL a la imagen guardada
-      const baseUrl = window.location.origin;
-      const urlImagen = `${baseUrl}/resultado.png?t=${Date.now()}`; // timestamp para evitar cache
-      
-      const qrDataUrl = await QRCode.toDataURL(urlImagen, {
-        width: 200,
-        margin: 2,
-        color: {
-          dark: '#1a2a4a',
-          light: '#ffffff'
-        }
-      });
-
-      setQrCodeUrl(qrDataUrl);
     } catch (error) {
       console.error('Error generando imagen y QR:', error);
     }
@@ -264,14 +259,14 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
             </div>
 
             <div className="qr-section">
-              <h4>📱 Imagen del Resultado</h4>
+              <h4>📱 Marcador en Vivo</h4>
               <div className="qr-container">
                 {qrCodeUrl && (
-                  <img src={qrCodeUrl} alt="QR Code del resultado" className="qr-code" />
+                  <img src={qrCodeUrl} alt="QR Code del marcador en vivo" className="qr-code" />
                 )}
               </div>
               <p className="qr-instructions">
-                Escanea para ver la imagen del resultado
+                Escanea para ver el marcador en vivo
               </p>
             </div>
           </div>

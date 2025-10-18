@@ -627,7 +627,19 @@ function App() {
     if (debug) setLogs(l => [...l, `[ACTION] ${msg}`]);
   };
 
-  // Funciones para capturar y compartir imagen del marcador
+  // Función para capturar marcador y devolver dataURL
+  const capturarMarcadorParaQR = async () => {
+    try {
+      const canvas = await capturarMarcador();
+      if (canvas) {
+        return canvas.toDataURL('image/png');
+      }
+      return null;
+    } catch (error) {
+      console.error('Error capturando marcador para QR:', error);
+      return null;
+    }
+  };
   const capturarMarcador = async () => {
     try {
       if (!marcadorRef.current) {
@@ -876,6 +888,7 @@ function App() {
                         onNuevoPartido={iniciarNuevoPartido}
                         onCompartirMarcador={compartirImagenMarcador}
                         onDescargarMarcador={descargarImagenMarcador}
+                        onCapturarMarcadorLive={capturarMarcadorParaQR}
                         jugadores={jugadores}
                       />
                     )}
