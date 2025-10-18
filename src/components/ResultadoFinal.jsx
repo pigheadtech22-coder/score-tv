@@ -35,14 +35,31 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
       // Convertir a imagen
       const imagenDataUrl = canvas.toDataURL('image/png');
       
-      // Generar QR simple con texto para lectura rápida
-      const textoQR = `🏆 ${resultadoFinal.torneo} - ${resultadoFinal.fase}
-� ${resultadoFinal.fecha}
-🏆 Ganador: Equipo ${resultadoFinal.ganador}
-📊 Resultado: ${resultadoFinal.resultado}
-⏱️ ${resultadoFinal.duracion}`;
+      // Guardar imagen en el servidor
+      try {
+        const response = await fetch('/api/guardar-resultado', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            imagen: imagenDataUrl,
+            nombre: 'resultado.png'
+          })
+        });
+        
+        if (response.ok) {
+          console.log('✅ Imagen guardada en servidor');
+        }
+      } catch (error) {
+        console.error('❌ Error guardando imagen en servidor:', error);
+      }
 
-      const qrDataUrl = await QRCode.toDataURL(textoQR, {
+      // Generar QR con URL a la imagen guardada
+      const baseUrl = window.location.origin;
+      const urlImagen = `${baseUrl}/resultado.png?t=${Date.now()}`; // timestamp para evitar cache
+      
+      const qrDataUrl = await QRCode.toDataURL(urlImagen, {
         width: 200,
         margin: 2,
         color: {
@@ -247,14 +264,14 @@ const ResultadoFinal = ({ resultadoFinal, onCerrar, onNuevoPartido, onCompartirM
             </div>
 
             <div className="qr-section">
-              <h4>📱 Resumen del Partido</h4>
+              <h4>📱 Imagen del Resultado</h4>
               <div className="qr-container">
                 {qrCodeUrl && (
                   <img src={qrCodeUrl} alt="QR Code del resultado" className="qr-code" />
                 )}
               </div>
               <p className="qr-instructions">
-                Escanea para ver resumen rápido del resultado
+                Escanea para ver la imagen del resultado
               </p>
             </div>
           </div>

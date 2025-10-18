@@ -48,6 +48,37 @@ app.use((req, res, next) => {
   }
 });
 
+// Endpoint para guardar imagen de resultado
+app.post('/api/guardar-resultado', (req, res) => {
+  try {
+    const { imagen, nombre } = req.body;
+    
+    if (!imagen || !nombre) {
+      return res.status(400).json({ error: 'Imagen y nombre son requeridos' });
+    }
+
+    // Convertir base64 a buffer
+    const base64Data = imagen.replace(/^data:image\/png;base64,/, '');
+    const buffer = Buffer.from(base64Data, 'base64');
+    
+    // Guardar en public/ para que sea accesible vía web
+    const rutaArchivo = path.join(__dirname, 'public', nombre);
+    
+    fs.writeFileSync(rutaArchivo, buffer);
+    
+    console.log(`✅ Imagen guardada: ${rutaArchivo}`);
+    res.json({ 
+      success: true, 
+      url: `/${nombre}`,
+      message: 'Imagen guardada correctamente' 
+    });
+    
+  } catch (error) {
+    console.error('❌ Error guardando imagen:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // ===============================
 // ENDPOINTS PARA ESP32 HARDWARE
 // ===============================
@@ -292,6 +323,9 @@ app.post('/api/delete-video', express.json(), (req, res) => {
 // Servir archivos estáticos (React)
 // Servir archivos estáticos (solo React, no videos)
 app.use('/static', express.static(path.join(__dirname, 'public')));
+
+// Servir archivos desde public directamente (para resultado.png, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Ruta directa para control remoto (sin /static)
 app.get('/control-remoto.html', (req, res) => {
